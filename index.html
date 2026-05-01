@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title> Электро Проект PRO</title>
+    <title>⚡ Электро Проект PRO</title>
     <style>
         :root { --primary: #007AFF; --bg: #F2F2F7; --card: #FFFFFF; --text: #1C1C1E; --warn: #FF9500; }
         @media (prefers-color-scheme: dark) { :root { --bg: #000000; --card: #1C1C1E; --text: #FFFFFF; } }
@@ -68,11 +68,11 @@
     <div class="grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
         <div class="form-row">
             <label>Площадь (м²)</label>
-            <input type="number" id="area" value="50">
+            <input type="number" id="area" value="35">
         </div>
         <div class="form-row">
             <label>Дальняя точка (м)</label>
-            <input type="number" id="maxDist" value="15">
+            <input type="number" id="maxDist" value="10">
         </div>
     </div>
 
@@ -114,7 +114,7 @@
 
     <div class="form-row" style="margin-top:10px;">
         <label>Розетки в санузле:</label>
-        <input type="number" id="bathSockets" value="3">
+        <input type="number" id="bathSockets" value="2">
     </div>
     
     <!-- Выбор количества зон теплого пола (все на 1 группе) -->
@@ -129,34 +129,34 @@
     </div>
     <div id="floorHeatOptions" class="sub-option">
         <label>Общая площадь ТП (м²):</label>
-        <input type="number" id="floorHeatArea" value="4">
+        <input type="number" id="floorHeatArea" value="3">
         <div class="hint" style="font-size:11px; color:#888;">Все зоны подключаются к одному автомату</div>
     </div>
 
     <h2>3. Освещение и Розетки</h2>
     <div class="form-row">
         <label>Освещение комнат + Кухня + Коридор:</label>
-        <input type="number" id="mainLights" value="10">
+        <input type="number" id="mainLights" value="6">
     </div>
     <div class="form-row">
         <label>Освещение Санузла (отдельно):</label>
-        <input type="number" id="bathLights" value="2">
+        <input type="number" id="bathLights" value="1">
     </div>
     
     <div class="grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
         <div class="form-row">
             <label>Выключатели:</label>
-            <input type="number" id="switches" value="12">
+            <input type="number" id="switches" value="4">
         </div>
         <div class="form-row">
             <label>Розетки фартука:</label>
-            <input type="number" id="kitchenCounter" value="4">
+            <input type="number" id="kitchenCounter" value="3">
         </div>
     </div>
     
     <div class="form-row">
         <label>Розетки комнат + Гостиная:</label>
-        <input type="number" id="roomSockets" value="20">
+        <input type="number" id="roomSockets" value="8">
     </div>
 
     <h2>4. Управление</h2>
@@ -201,67 +201,92 @@
                 select.appendChild(option);
             });
         })
-        .catch(err => console.log("presets.json не найден"));
+        .catch(err => console.log("presets.json не найден или ошибка сети"));
 
     function loadPreset() {
         const idx = document.getElementById('presetSelect').value;
         if(idx === "") return;
         
         const p = presetsData[idx];
-        document.getElementById('area').value = p.area;
-        document.getElementById('maxDist').value = p.maxDist;
-        document.getElementById('cableCoef').value = p.cableCoef;
-        document.getElementById('wallType').value = p.wallType;
         
-        document.getElementById('washMachine').checked = p.washMachine;
-        document.getElementById('dishWasher').checked = p.dishWasher;
-        document.getElementById('ovenMicrowave').checked = p.ovenMicrowave;
+        // Безопасное присвоение значений с проверкой на undefined
+        const setVal = (id, val, def) => {
+            const el = document.getElementById(id);
+            if(el) el.value = (val !== undefined && val !== null) ? val : def;
+        };
+        const setCheck = (id, val) => {
+            const el = document.getElementById(id);
+            if(el) el.checked = !!val;
+        };
+
+        setVal('area', p.area, 35);
+        setVal('maxDist', p.maxDist, 10);
+        setVal('cableCoef', p.cableCoef, 1.0);
+        setVal('wallType', p.wallType, 350);
         
-        document.getElementById('boilerCheck').checked = p.boilerCheck;
+        setCheck('washMachine', p.washMachine);
+        setCheck('dishWasher', p.dishWasher);
+        setCheck('ovenMicrowave', p.ovenMicrowave);
+        
+        setCheck('boilerCheck', p.boilerCheck);
         if(p.boilerType) document.getElementById('boilerType').value = p.boilerType;
         toggleBoiler();
         
-        document.getElementById('bathSockets').value = p.bathSockets;
+        setVal('bathSockets', p.bathSockets, 2);
         
-        document.getElementById('floorHeatZones').value = p.floorHeatZones;
-        document.getElementById('floorHeatArea').value = p.floorHeatArea;
+        setVal('floorHeatZones', p.floorHeatZones, 0);
+        setVal('floorHeatArea', p.floorHeatArea, 3);
         toggleFloorHeat();
         
-        document.getElementById('mainLights').value = p.mainLights;
-        document.getElementById('bathLights').value = p.bathLights;
-        document.getElementById('switches').value = p.switches;
-        document.getElementById('kitchenCounter').value = p.kitchenCounter;
-        document.getElementById('roomSockets').value = p.roomSockets;
+        setVal('mainLights', p.mainLights, 6);
+        setVal('bathLights', p.bathLights, 1);
+        setVal('switches', p.switches, 4);
+        setVal('kitchenCounter', p.kitchenCounter, 3);
+        setVal('roomSockets', p.roomSockets, 8);
         
-        document.getElementById('masterKey').checked = p.masterKey;
+        setCheck('masterKey', p.masterKey);
         toggleMasterKey();
         
         calculate();
     }
 
-    function toggleBoiler() { document.getElementById('boilerOptions').classList.toggle('visible', document.getElementById('boilerCheck').checked); }
+    function toggleBoiler() { 
+        const el = document.getElementById('boilerOptions');
+        const chk = document.getElementById('boilerCheck');
+        if(chk) el.classList.toggle('visible', chk.checked); 
+    }
     
     function toggleFloorHeat() { 
-        const zones = parseInt(document.getElementById('floorHeatZones').value);
+        const zonesEl = document.getElementById('floorHeatZones');
         const el = document.getElementById('floorHeatOptions');
+        const zones = zonesEl ? parseInt(zonesEl.value) : 0;
+        
         if(zones > 0) {
             el.classList.add('visible');
-            if(!document.getElementById('floorHeatArea').value) document.getElementById('floorHeatArea').value = zones * 4;
+            const areaEl = document.getElementById('floorHeatArea');
+            if(areaEl && !areaEl.value) areaEl.value = zones * 3;
         } else {
             el.classList.remove('visible');
         }
     }
     
-    function toggleMasterKey() { document.getElementById('masterKeyInfo').classList.toggle('visible', document.getElementById('masterKey').checked); }
+    function toggleMasterKey() { 
+        const el = document.getElementById('masterKeyInfo');
+        const chk = document.getElementById('masterKey');
+        if(chk) el.classList.toggle('visible', chk.checked); 
+    }
 
     // === РАСЧЕТ КАБЕЛЯ ===
     function calculateCable(area, totalPoints, maxDist, complexityCoef, hasFloorHeat) {
+        if(!area || area <= 0) return { total: 0, pwr: 0, light: 0 };
+        
         const perimeter = Math.sqrt(area) * 4;
         let baseLen = perimeter * 1.2; 
-        const pointsLen = totalPoints * 1.5; 
-        const distAdjustment = maxDist > 15 ? (maxDist - 15) * 2 : 0;
+        const pointsLen = (totalPoints || 0) * 1.5; 
+        const distAdjustment = (maxDist || 0) > 15 ? ((maxDist - 15) * 2) : 0;
         const fhLen = hasFloorHeat ? 20 : 0;
-        let rawTotal = (baseLen + pointsLen + distAdjustment + fhLen) * complexityCoef;
+        
+        let rawTotal = (baseLen + pointsLen + distAdjustment + fhLen) * (complexityCoef || 1.0);
         let finalTotal = Math.ceil(rawTotal * 1.15);
 
         return {
@@ -273,11 +298,11 @@
 
     function calculate() {
         try {
-            // 1. БАЗА
+            // 1. БАЗА (с защитой от NaN)
             const area = parseFloat(document.getElementById('area').value) || 0;
-            const wallPrice = parseFloat(document.getElementById('wallType').value);
-            const cableCoef = parseFloat(document.getElementById('cableCoef').value);
-            const maxDist = parseFloat(document.getElementById('maxDist').value) || 15;
+            const wallPrice = parseFloat(document.getElementById('wallType').value) || 350;
+            const cableCoef = parseFloat(document.getElementById('cableCoef').value) || 1.0;
+            const maxDist = parseFloat(document.getElementById('maxDist').value) || 10;
             
             // 2. ТЕХНИКА
             const hasWash = document.getElementById('washMachine').checked;
@@ -325,7 +350,6 @@
             if(kCounter > 0) groups.push({name: "Розетки фартука", w: 2.5});
             if(bathSockets > 0) groups.push({name: "Розетки с/у (УЗО)", w: 2.5});
             
-            // 🔥 ВСЕ ТЕПЛЫЕ ПОЛЫ НА ОДНОЙ ГРУППЕ
             if(hasFloorHeat) {
                 groups.push({name: `Теплые полы (${floorHeatZones} зон)`, w: 2.5});
             }
@@ -349,11 +373,8 @@
             const costLights = totalLights * P.light;
             const costBoxes = groups.length * P.box; 
             
-            // Теплые полы: 1 комплект управления + маты по площади
             const costFloorHeat = hasFloorHeat ? (P.floor_heat_control + floorHeatArea * P.floor_heat_mat) : 0;
-            
             const costContactor = hasMasterKey ? P.contactor : 0;
-            // УЗО: Розетки, Свет с/у, Теплые полы (всегда 3, если полы есть)
             const uzoCount = hasFloorHeat ? 3 : 2; 
             const costUZO = uzoCount * P.uzo;
 
@@ -361,7 +382,6 @@
                                    costPodrozetniki + costJunctionBoxes + costLights + costBoxes + 
                                    costUZO + costFloorHeat + costContactor;
 
-            // Работы
             const workStrobe = (lenPwr + lenLight) * wallPrice * 0.8;
             const workInstallPoints = totalSockets * P.work_point;
             const workInstallLights = totalLights * P.work_light;
@@ -412,7 +432,10 @@
 
             window.lastData = `Проект на ${area}м²\nКабель: ${cableData.total}м\nПодрозетники: ${countPodrozetniki} шт\nГрупп: ${groups.length}\nИтого: ${grandTotal} руб.`;
 
-        } catch(e) { alert("Ошибка: "+e.message); console.error(e); }
+        } catch(e) { 
+            alert("Ошибка расчета: " + e.message); 
+            console.error(e); 
+        }
     }
 
     function copyResult() {
