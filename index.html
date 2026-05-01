@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>⚡ Электро Проект PRO</title>
+    <title> Электро Проект PRO</title>
     <style>
         :root { --primary: #007AFF; --bg: #F2F2F7; --card: #FFFFFF; --text: #1C1C1E; --warn: #FF9500; }
         @media (prefers-color-scheme: dark) { :root { --bg: #000000; --card: #1C1C1E; --text: #FFFFFF; } }
@@ -12,33 +12,42 @@
         .app { max-width: 600px; margin: 0 auto; background: var(--card); border-radius: 16px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
         
         h1 { text-align: center; color: var(--primary); font-size: 20px; margin: 0 0 20px 0; }
-        h2 { font-size: 16px; border-bottom: 1px solid rgba(128,128,128,0.2); padding-bottom: 8px; margin-top: 25px; color: var(--text); }
+        h2 { font-size: 16px; border-bottom: 1px solid rgba(128,128,128,0.2); padding-bottom: 8px; margin-top: 25px; color: var(--text); display: flex; align-items: center; gap: 8px; }
+        h2::before { content: ''; display: block; width: 4px; height: 16px; background: var(--primary); border-radius: 2px; }
         
         .form-row { margin-bottom: 12px; }
         label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 5px; }
-        input, select { width: 100%; padding: 12px; border: none; border-radius: 10px; background: rgba(128,128,128,0.1); font-size: 16px; color: var(--text); box-sizing: border-box; }
+        input, select { width: 100%; padding: 12px; border: none; border-radius: 10px; background: rgba(128,128,128,0.1); font-size: 16px; color: var(--text); box-sizing: border-box; transition: 0.2s; }
+        input:focus, select:focus { outline: 2px solid var(--primary); background: rgba(128,128,128,0.05); }
         
-        .toggle-group { display: flex; align-items: center; justify-content: space-between; padding: 10px; background: rgba(128,128,128,0.05); border-radius: 10px; margin-bottom: 8px; }
-        .toggle-group label { margin: 0; font-weight: normal; }
-        .toggle-group input { width: 20px; height: 20px; }
+        .toggle-group { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: rgba(128,128,128,0.05); border-radius: 10px; margin-bottom: 8px; cursor: pointer; }
+        .toggle-group label { margin: 0; font-weight: normal; flex-grow: 1; }
+        .toggle-group input { width: 20px; height: 20px; margin-left: 10px; }
         
-        .sub-option { margin-left: 15px; margin-top: 5px; padding-left: 10px; border-left: 2px solid var(--primary); display: none; }
+        .sub-option { margin-left: 15px; margin-top: 5px; padding-left: 10px; border-left: 2px solid var(--primary); display: none; animation: fadeIn 0.3s; }
         .sub-option.visible { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
-        .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; margin-top: 15px; cursor: pointer; }
-        .btn-primary { background: var(--primary); color: white; }
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; margin-top: 15px; cursor: pointer; transition: 0.2s; }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(0,122,255,0.3); }
+        .btn-primary:active { transform: scale(0.98); }
         .btn-secondary { background: rgba(128,128,128,0.2); color: var(--primary); }
         
-        #result { margin-top: 20px; padding: 15px; background: rgba(0,122,255,0.1); border-radius: 12px; display: none; }
-        .group-list { list-style: none; padding: 0; margin: 10px 0; font-size: 14px; }
-        .group-list li { padding: 4px 0; border-bottom: 1px dashed rgba(128,128,128,0.3); display: flex; justify-content: space-between; }
-        .total-price { font-size: 24px; font-weight: bold; color: var(--primary); text-align: right; margin-top: 10px; }
-        .alert { background: #FFF3CD; color: #856404; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; border-left: 4px solid var(--warn); }
+        #result { margin-top: 20px; padding: 15px; background: rgba(0,122,255,0.1); border-radius: 12px; display: none; animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
-        .cable-breakdown { background: rgba(255,255,255,0.5); padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 13px; }
-        .cable-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+        .group-list { list-style: none; padding: 0; margin: 10px 0; font-size: 14px; }
+        .group-list li { padding: 6px 0; border-bottom: 1px dashed rgba(128,128,128,0.3); display: flex; justify-content: space-between; }
+        .total-price { font-size: 26px; font-weight: 800; color: var(--primary); text-align: right; margin-top: 15px; }
+        .alert { background: #FFF3CD; color: #856404; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; border-left: 4px solid var(--warn); line-height: 1.4; }
+        
+        .cable-breakdown { background: rgba(255,255,255,0.6); padding: 12px; border-radius: 8px; margin: 10px 0; font-size: 14px; }
+        .cable-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
         .item-count { font-weight: bold; color: #333; }
-        @media (prefers-color-scheme: dark) { .item-count { color: #fff; } }
+        @media (prefers-color-scheme: dark) { .item-count { color: #fff; } .cable-breakdown { background: rgba(255,255,255,0.1); } }
+        
+        .preset-loader { background: #eef7ff; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #cce5ff; }
+        .preset-select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #007AFF; background: white; color: #007AFF; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -46,47 +55,47 @@
 <div class="app">
     <h1>⚡ Электро Проект PRO</h1>
 
-    <!-- 1. Помещение -->
-    <h2>🏠 Параметры</h2>
-    <div class="form-row">
-        <label>Тип квартиры</label>
-        <select id="aptType" onchange="autoFill()">
-            <option value="custom">Вручную</option>
-            <option value="1">1-комнатная</option>
-            <option value="2">2-комнатная</option>
-            <option value="3">3-комнатная</option>
+    <!-- ЗАГРУЗКА ПРЕСЕТА -->
+    <div class="preset-loader">
+        <label style="color:#007AFF; font-weight:bold;">📂 Быстрый старт (Шаблон)</label>
+        <select id="presetSelect" class="preset-select" onchange="loadPreset()">
+            <option value="">— Выберите тип квартиры —</option>
         </select>
     </div>
-    <div class="form-row">
-        <label>Площадь (м²)</label>
-        <input type="number" id="area" value="50">
+
+    <!-- ШАГ 1: БАЗОВЫЕ ПАРАМЕТРЫ -->
+    <h2>1. Параметры объекта</h2>
+    <div class="grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div class="form-row">
+            <label>Площадь (м²)</label>
+            <input type="number" id="area" value="50">
+        </div>
+        <div class="form-row">
+            <label>Дальняя точка (м)</label>
+            <input type="number" id="maxDist" value="15">
+        </div>
     </div>
-    
-    <!-- Блок расчета кабеля -->
+
     <div class="form-row">
-        <label>Сложность трассы:</label>
+        <label>Сложность трассы</label>
         <select id="cableCoef">
             <option value="1.0">Стандарт (прямые стены)</option>
-            <option value="1.2">Сложно (ниши, много поворотов)</option>
+            <option value="1.2">Сложно (ниши, много углов)</option>
             <option value="0.9">Просто (минимум изгибов)</option>
         </select>
     </div>
-    <div class="form-row">
-        <label>Расстояние до самой дальней точки (м):</label>
-        <input type="number" id="maxDist" value="15">
-    </div>
 
     <div class="form-row">
-        <label>Стены</label>
+        <label>Материал стен</label>
         <select id="wallType">
-            <option value="350">Панель (Ж/Б)</option>
-            <option value="280">Монолит/Кирпич</option>
-            <option value="150">ГКЛ/Дерево</option>
+            <option value="350">Панель / Ж/Б (дорого штробить)</option>
+            <option value="280">Монолит / Кирпич</option>
+            <option value="150">ГКЛ / Дерево / Пеноблок</option>
         </select>
     </div>
 
-    <!-- 2. Кухня и Техника -->
-    <h2>🍳 Кухня и Техника</h2>
+    <!-- ШАГ 2: НАПОЛНЕНИЕ -->
+    <h2>2. Техника и Санузлы</h2>
     <div class="toggle-group"><label>Стиральная машина</label><input type="checkbox" id="washMachine"></div>
     <div class="toggle-group"><label>Посудомоечная машина</label><input type="checkbox" id="dishWasher"></div>
     <div class="toggle-group"><label>Духовой шкаф + СВЧ</label><input type="checkbox" id="ovenMicrowave"></div>
@@ -102,26 +111,29 @@
             <option value="flow">Проточный (~5-7кВт)</option>
         </select>
     </div>
-    <div class="form-row" style="margin-top:10px;">
-        <label>Розетки фартука:</label>
-        <input type="number" id="kitchenCounter" value="4">
-    </div>
 
-    <!-- 3. Санузел -->
-    <h2>🚿 Санузел</h2>
-    <div class="form-row"><label>Розетки в с/у:</label><input type="number" id="bathSockets" value="3"></div>
+    <div class="form-row" style="margin-top:10px;">
+        <label>Розетки в санузле:</label>
+        <input type="number" id="bathSockets" value="3">
+    </div>
     
+    <!-- Выбор количества зон теплого пола (все на 1 группе) -->
     <div class="toggle-group">
-        <label>Теплые полы</label>
-        <input type="checkbox" id="floorHeat" onchange="toggleFloorHeat()">
+        <label>Теплые полы (кол-во зон)</label>
+        <select id="floorHeatZones" onchange="toggleFloorHeat()" style="width: 80px; padding: 5px;">
+            <option value="0">Нет</option>
+            <option value="1">1 зона</option>
+            <option value="2">2 зоны</option>
+            <option value="3">3 зоны</option>
+        </select>
     </div>
     <div id="floorHeatOptions" class="sub-option">
-        <label>Площадь ТП (м²):</label>
+        <label>Общая площадь ТП (м²):</label>
         <input type="number" id="floorHeatArea" value="4">
+        <div class="hint" style="font-size:11px; color:#888;">Все зоны подключаются к одному автомату</div>
     </div>
 
-    <!-- 4. Свет и Розетки -->
-    <h2>💡 Свет и Розетки</h2>
+    <h2>3. Освещение и Розетки</h2>
     <div class="form-row">
         <label>Освещение комнат + Кухня + Коридор:</label>
         <input type="number" id="mainLights" value="10">
@@ -130,17 +142,30 @@
         <label>Освещение Санузла (отдельно):</label>
         <input type="number" id="bathLights" value="2">
     </div>
-    <div class="form-row"><label>Выключатели всего:</label><input type="number" id="switches" value="12"></div>
-    <div class="form-row"><label>Розетки (Комнаты + Гостиная):</label><input type="number" id="roomSockets" value="20"></div>
+    
+    <div class="grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div class="form-row">
+            <label>Выключатели:</label>
+            <input type="number" id="switches" value="12">
+        </div>
+        <div class="form-row">
+            <label>Розетки фартука:</label>
+            <input type="number" id="kitchenCounter" value="4">
+        </div>
+    </div>
+    
+    <div class="form-row">
+        <label>Розетки комнат + Гостиная:</label>
+        <input type="number" id="roomSockets" value="20">
+    </div>
 
-    <!-- 5. Управление -->
-    <h2>🏠 Управление</h2>
+    <h2>4. Управление</h2>
     <div class="toggle-group">
-        <label>Мастер-клавиша</label>
+        <label>Мастер-клавиша (всё выкл.)</label>
         <input type="checkbox" id="masterKey" onchange="toggleMasterKey()">
     </div>
     <div id="masterKeyInfo" class="sub-option">
-        <div class="alert">️ Требуется контактор (2 модуля)</div>
+        <div class="alert">️ Требуется контактор (2 модуля) в щите</div>
     </div>
 
     <button class="btn btn-primary" onclick="calculate()">📊 Рассчитать проект</button>
@@ -154,24 +179,82 @@
     const P = {
         cable_1_5: 45, cable_2_5: 70, cable_4_0: 120, cable_6_0: 180,
         socket: 150, switch: 120, pod: 30, light: 200, 
-        junction_box: 40, // Распредкоробка
-        box: 100, uzo: 1500,
+        junction_box: 40, box: 100, uzo: 1500,
         contactor: 2500, 
         work_point: 500, work_light: 400, work_panel: 3500, work_group: 250,
-        floor_heat: 2500
+        floor_heat_control: 2500, // Терморегулятор + монтаж (1 шт на всю группу)
+        floor_heat_mat: 1500      // Цена за м² мата
     };
 
-    const AREA_PRESETS = { '1': 40, '2': 60, '3': 85 };
+    let presetsData = [];
 
-    function autoFill() {
-        const t = document.getElementById('aptType').value;
-        if(AREA_PRESETS[t]) document.getElementById('area').value = AREA_PRESETS[t];
+    // Загрузка пресетов из файла
+    fetch('presets.json')
+        .then(response => response.json())
+        .then(data => {
+            presetsData = data;
+            const select = document.getElementById('presetSelect');
+            data.forEach((p, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.text = p.name;
+                select.appendChild(option);
+            });
+        })
+        .catch(err => console.log("presets.json не найден"));
+
+    function loadPreset() {
+        const idx = document.getElementById('presetSelect').value;
+        if(idx === "") return;
+        
+        const p = presetsData[idx];
+        document.getElementById('area').value = p.area;
+        document.getElementById('maxDist').value = p.maxDist;
+        document.getElementById('cableCoef').value = p.cableCoef;
+        document.getElementById('wallType').value = p.wallType;
+        
+        document.getElementById('washMachine').checked = p.washMachine;
+        document.getElementById('dishWasher').checked = p.dishWasher;
+        document.getElementById('ovenMicrowave').checked = p.ovenMicrowave;
+        
+        document.getElementById('boilerCheck').checked = p.boilerCheck;
+        if(p.boilerType) document.getElementById('boilerType').value = p.boilerType;
+        toggleBoiler();
+        
+        document.getElementById('bathSockets').value = p.bathSockets;
+        
+        document.getElementById('floorHeatZones').value = p.floorHeatZones;
+        document.getElementById('floorHeatArea').value = p.floorHeatArea;
+        toggleFloorHeat();
+        
+        document.getElementById('mainLights').value = p.mainLights;
+        document.getElementById('bathLights').value = p.bathLights;
+        document.getElementById('switches').value = p.switches;
+        document.getElementById('kitchenCounter').value = p.kitchenCounter;
+        document.getElementById('roomSockets').value = p.roomSockets;
+        
+        document.getElementById('masterKey').checked = p.masterKey;
+        toggleMasterKey();
+        
+        calculate();
     }
+
     function toggleBoiler() { document.getElementById('boilerOptions').classList.toggle('visible', document.getElementById('boilerCheck').checked); }
-    function toggleFloorHeat() { document.getElementById('floorHeatOptions').classList.toggle('visible', document.getElementById('floorHeat').checked); }
+    
+    function toggleFloorHeat() { 
+        const zones = parseInt(document.getElementById('floorHeatZones').value);
+        const el = document.getElementById('floorHeatOptions');
+        if(zones > 0) {
+            el.classList.add('visible');
+            if(!document.getElementById('floorHeatArea').value) document.getElementById('floorHeatArea').value = zones * 4;
+        } else {
+            el.classList.remove('visible');
+        }
+    }
+    
     function toggleMasterKey() { document.getElementById('masterKeyInfo').classList.toggle('visible', document.getElementById('masterKey').checked); }
 
-    // === ФУНКЦИЯ РАСЧЕТА КАБЕЛЯ ===
+    // === РАСЧЕТ КАБЕЛЯ ===
     function calculateCable(area, totalPoints, maxDist, complexityCoef, hasFloorHeat) {
         const perimeter = Math.sqrt(area) * 4;
         let baseLen = perimeter * 1.2; 
@@ -190,24 +273,26 @@
 
     function calculate() {
         try {
+            // 1. БАЗА
             const area = parseFloat(document.getElementById('area').value) || 0;
             const wallPrice = parseFloat(document.getElementById('wallType').value);
             const cableCoef = parseFloat(document.getElementById('cableCoef').value);
             const maxDist = parseFloat(document.getElementById('maxDist').value) || 15;
             
-            // Техника
+            // 2. ТЕХНИКА
             const hasWash = document.getElementById('washMachine').checked;
             const hasDish = document.getElementById('dishWasher').checked;
             const hasOven = document.getElementById('ovenMicrowave').checked;
             const hasBoiler = document.getElementById('boilerCheck').checked;
             const boilerType = document.getElementById('boilerType').value;
             
-            // Санузел
+            // 3. САНУЗЕЛ И ПОЛЫ
             const bathSockets = parseInt(document.getElementById('bathSockets').value) || 0;
-            const hasFloorHeat = document.getElementById('floorHeat').checked;
+            const floorHeatZones = parseInt(document.getElementById('floorHeatZones').value) || 0;
             const floorHeatArea = parseInt(document.getElementById('floorHeatArea').value) || 0;
+            const hasFloorHeat = floorHeatZones > 0;
 
-            // Свет и Розетки
+            // 4. СВЕТ И РОЗЕТКИ
             const mainLights = parseInt(document.getElementById('mainLights').value) || 0;
             const bathLights = parseInt(document.getElementById('bathLights').value) || 0;
             const kCounter = parseInt(document.getElementById('kitchenCounter').value) || 0;
@@ -215,19 +300,13 @@
             const switches = parseInt(document.getElementById('switches').value) || 0;
             const hasMasterKey = document.getElementById('masterKey').checked;
 
-            // Подсчет всего
             const totalSockets = kCounter + roomSockets + bathSockets + (hasWash?1:0) + (hasDish?1:0) + (hasOven?1:0) + (hasBoiler?1:0);
             const totalLights = mainLights + bathLights;
             const totalPoints = totalSockets + totalLights + switches;
 
-            // === ПОДСЧЕТ ПОДРОЗЕТНИКОВ И КОРОБОК ===
-            // 1 подрозетник на каждую розетку и выключатель
             const countPodrozetniki = totalSockets + switches;
-            
-            // Распредкоробки: примерно 1 на каждые 5-6 точек + запас
             const countJunctionBoxes = Math.ceil(totalPoints / 5) + 2;
 
-            // === РАСЧЕТ КАБЕЛЯ ===
             const cableData = calculateCable(area, totalPoints, maxDist, cableCoef, hasFloorHeat);
             const lenPwr = cableData.pwr;   
             const lenLight = cableData.light;
@@ -245,7 +324,11 @@
             }
             if(kCounter > 0) groups.push({name: "Розетки фартука", w: 2.5});
             if(bathSockets > 0) groups.push({name: "Розетки с/у (УЗО)", w: 2.5});
-            if(hasFloorHeat) groups.push({name: "Теплые полы", w: 2.5});
+            
+            // 🔥 ВСЕ ТЕПЛЫЕ ПОЛЫ НА ОДНОЙ ГРУППЕ
+            if(hasFloorHeat) {
+                groups.push({name: `Теплые полы (${floorHeatZones} зон)`, w: 2.5});
+            }
             
             if(mainLights > 0) groups.push({name: `Свет основной (${mainLights} т.)`, w: 1.5});
             if(bathLights > 0) groups.push({name: "Свет с/у (УЗО)", w: 1.5});
@@ -261,17 +344,18 @@
             
             const costSocketsMech = totalSockets * P.socket;
             const costSwitchesMech = switches * P.switch;
-            
-            // Подрозетники (материал)
             const costPodrozetniki = countPodrozetniki * P.pod;
-            // Распредкоробки (материал)
             const costJunctionBoxes = countJunctionBoxes * P.junction_box;
-
             const costLights = totalLights * P.light;
-            const costBoxes = groups.length * P.box; // Щитовые модули/рейки
-            const costFloorHeat = hasFloorHeat ? (floorHeatArea * 1500 + P.floor_heat) : 0;
+            const costBoxes = groups.length * P.box; 
+            
+            // Теплые полы: 1 комплект управления + маты по площади
+            const costFloorHeat = hasFloorHeat ? (P.floor_heat_control + floorHeatArea * P.floor_heat_mat) : 0;
+            
             const costContactor = hasMasterKey ? P.contactor : 0;
-            const costUZO = 3 * P.uzo;
+            // УЗО: Розетки, Свет с/у, Теплые полы (всегда 3, если полы есть)
+            const uzoCount = hasFloorHeat ? 3 : 2; 
+            const costUZO = uzoCount * P.uzo;
 
             const totalMaterials = costCablePwr + costCableLight + costSocketsMech + costSwitchesMech + 
                                    costPodrozetniki + costJunctionBoxes + costLights + costBoxes + 
@@ -291,7 +375,7 @@
             // === ВЫВОД ===
             let alerts = "";
             if(hasBoiler && boilerType === 'flow') alerts += "<div class='alert'>⚠️ Проточный требует кабель 3x6!</div>";
-            if(groups.length > 12) alerts += "<div class='alert'>ℹ️ Щит >12 модулей. Нужен двухрядный.</div>";
+            if(groups.length > 12) alerts += "<div class='alert'>ℹ️ Щит >12 модулей. Рекомендуем двухрядный.</div>";
 
             let groupHtml = groups.map(g => {
                 if(g.type === 'contactor') return `<li><span>${g.name}</span> <span>2 мод</span></li>`;
@@ -301,22 +385,23 @@
             const html = `
                 ${alerts}
                 
-                <div style="font-weight:bold; margin-bottom:5px;">📦 Материалы (количество):</div>
+                <div style="font-weight:bold; margin-bottom:10px; color:var(--primary);">📦 Закупка материалов:</div>
                 <div class="cable-breakdown">
                     <div class="cable-row"><span> ВВГнг 3×2.5 (Силовой):</span> <b>${lenPwr} м</b></div>
                     <div class="cable-row"><span>🧵 ВВГнг 3×1.5 (Свет):</span> <b>${lenLight} м</b></div>
                     <div class="cable-row"><span>🔌 Механизмы (розетки):</span> <span class="item-count">${totalSockets} шт</span></div>
                     <div class="cable-row"><span>🔲 Механизмы (выкл):</span> <span class="item-count">${switches} шт</span></div>
-                    <div class="cable-row" style="background:rgba(0,122,255,0.1); padding:5px; border-radius:4px;"><span>🏺 <b>Подрозетники:</b></span> <span class="item-count"><b>${countPodrozetniki} шт</b></span></div>
+                    <div class="cable-row" style="background:rgba(0,122,255,0.1); padding:5px; border-radius:4px;"><span> <b>Подрозетники:</b></span> <span class="item-count"><b>${countPodrozetniki} шт</b></span></div>
                     <div class="cable-row"><span> Распред. коробки:</span> <span class="item-count">~${countJunctionBoxes} шт</span></div>
+                    ${hasFloorHeat ? `<div class="cable-row"><span> Терморегулятор ТП:</span> <span class="item-count">1 шт (на все зоны)</span></div>` : ''}
                 </div>
 
-                <div style="font-weight:bold; margin-bottom:5px;">📋 Схема щита (${groups.length} групп):</div>
+                <div style="font-weight:bold; margin-bottom:5px; margin-top:15px;">📋 Схема щита (${groups.length} групп):</div>
                 <ul class="group-list">${groupHtml}</ul>
                 
-                <hr style="border:0; border-top:1px dashed #ccc; margin:10px 0;">
-                <div style="display:flex; justify-content:space-between;"><span>Материалы (сумма):</span> <span>${totalMaterials} ₽</span></div>
-                <div style="display:flex; justify-content:space-between;"><span>Работы (сумма):</span> <span>${totalWork} ₽</span></div>
+                <hr style="border:0; border-top:1px dashed #ccc; margin:15px 0;">
+                <div style="display:flex; justify-content:space-between; font-size:15px;"><span>Материалы:</span> <span>${totalMaterials} ₽</span></div>
+                <div style="display:flex; justify-content:space-between; font-size:15px;"><span>Работы:</span> <span>${totalWork} ₽</span></div>
                 <div class="total-price">ИТОГО: ${grandTotal} ₽</div>
             `;
 
@@ -325,7 +410,7 @@
             resDiv.style.display = 'block';
             resDiv.scrollIntoView({behavior:'smooth'});
 
-            window.lastData = `Проект на ${area}м²\nКабель: ${cableData.total}м\nПодрозетники: ${countPodrozetniki} шт\nИтого: ${grandTotal} руб.`;
+            window.lastData = `Проект на ${area}м²\nКабель: ${cableData.total}м\nПодрозетники: ${countPodrozetniki} шт\nГрупп: ${groups.length}\nИтого: ${grandTotal} руб.`;
 
         } catch(e) { alert("Ошибка: "+e.message); console.error(e); }
     }
