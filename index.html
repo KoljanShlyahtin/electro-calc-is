@@ -276,17 +276,30 @@
         if(chk) el.classList.toggle('visible', chk.checked); 
     }
 
-    // === РАСЧЕТ КАБЕЛЯ ===
+        // === РАСЧЕТ КАБЕЛЯ (ИСПРАВЛЕННАЯ ВЕРСИЯ) ===
     function calculateCable(area, totalPoints, maxDist, complexityCoef, hasFloorHeat) {
-        if(!area || area <= 0) return { total: 0, pwr: 0, light: 0 };
+        // Явно превращаем всё в числа
+        const a = Number(area) || 0;
+        const tp = Number(totalPoints) || 0;
+        const md = Number(maxDist) || 0;
+        const cc = Number(complexityCoef) || 1.0;
+
+        if (a <= 0) return { total: 0, pwr: 0, light: 0 };
         
-        const perimeter = Math.sqrt(area) * 4;
+        const perimeter = Math.sqrt(a) * 4;
         let baseLen = perimeter * 1.2; 
-        const pointsLen = (totalPoints || 0) * 1.5; 
-        const distAdjustment = (maxDist || 0) > 15 ? ((maxDist - 15) * 2) : 0;
+        const pointsLen = tp * 1.5; 
+        const distAdjustment = md > 15 ? ((md - 15) * 2) : 0;
         const fhLen = hasFloorHeat ? 20 : 0;
         
-        let rawTotal = (baseLen + pointsLen + distAdjustment + fhLen) * (complexityCoef || 1.0);
+        // Проверяем, не NaN ли результат промежуточных вычислений
+        let rawTotal = (baseLen + pointsLen + distAdjustment + fhLen) * cc;
+        
+        if (isNaN(rawTotal)) {
+            console.error("Ошибка в расчете кабеля:", { a, tp, md, cc, baseLen, pointsLen });
+            return { total: 0, pwr: 0, light: 0 };
+        }
+
         let finalTotal = Math.ceil(rawTotal * 1.15);
 
         return {
