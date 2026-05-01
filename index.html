@@ -2,307 +2,339 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ ElectroPro Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>⚡ Электро Проект PRO</title>
     <style>
-        :root { --primary: #007bff; --bg: #f8f9fa; --card: #fff; --text: #333; --danger: #dc3545; --success: #28a745; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; line-height: 1.6; }
-        .container { max-width: 800px; margin: 0 auto; background: var(--card); padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        :root { --primary: #007AFF; --bg: #F2F2F7; --card: #FFFFFF; --text: #1C1C1E; --warn: #FF9500; }
+        @media (prefers-color-scheme: dark) { :root { --bg: #000000; --card: #1C1C1E; --text: #FFFFFF; } }
         
-        h1 { text-align: center; color: var(--primary); margin-bottom: 30px; }
-        h2 { font-size: 18px; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 30px; color: #555; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; }
+        .app { max-width: 600px; margin: 0 auto; background: var(--card); border-radius: 16px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
         
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 14px; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
-        input:focus, select:focus { border-color: var(--primary); outline: none; }
+        h1 { text-align: center; color: var(--primary); font-size: 20px; margin: 0 0 20px 0; }
+        h2 { font-size: 16px; border-bottom: 1px solid rgba(128,128,128,0.2); padding-bottom: 8px; margin-top: 25px; color: var(--text); }
         
-        .checkbox-group { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .checkbox-group input { width: auto; }
+        .form-row { margin-bottom: 12px; }
+        label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 5px; }
+        input, select { width: 100%; padding: 12px; border: none; border-radius: 10px; background: rgba(128,128,128,0.1); font-size: 16px; color: var(--text); box-sizing: border-box; }
+        
+        .toggle-group { display: flex; align-items: center; justify-content: space-between; padding: 10px; background: rgba(128,128,128,0.05); border-radius: 10px; margin-bottom: 8px; }
+        .toggle-group label { margin: 0; font-weight: normal; }
+        .toggle-group input { width: 20px; height: 20px; }
+        
+        .sub-option { margin-left: 15px; margin-top: 5px; padding-left: 10px; border-left: 2px solid var(--primary); display: none; }
+        .sub-option.visible { display: block; }
 
-        .btn-group { display: flex; gap: 10px; margin-top: 30px; flex-wrap: wrap; }
-        button { flex: 1; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; min-width: 120px; }
-        .btn-calc { background: var(--primary); color: white; }
-        .btn-calc:hover { background: #0056b3; }
-        .btn-excel { background: #217346; color: white; } /* Excel Green */
-        .btn-history { background: #6c757d; color: white; }
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; margin-top: 15px; cursor: pointer; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: rgba(128,128,128,0.2); color: var(--primary); }
         
-        #result-area { margin-top: 30px; display: none; animation: fadeIn 0.5s; }
-        .report-card { background: #f1f8ff; border: 1px solid #cce5ff; padding: 20px; border-radius: 8px; }
-        .alert { padding: 10px; border-radius: 6px; margin-bottom: 15px; font-size: 14px; }
-        .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-        .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        #result { margin-top: 20px; padding: 15px; background: rgba(0,122,255,0.1); border-radius: 12px; display: none; }
+        .group-list { list-style: none; padding: 0; margin: 10px 0; font-size: 14px; }
+        .group-list li { padding: 4px 0; border-bottom: 1px dashed rgba(128,128,128,0.3); display: flex; justify-content: space-between; }
+        .total-price { font-size: 24px; font-weight: bold; color: var(--primary); text-align: right; margin-top: 10px; }
+        .alert { background: #FFF3CD; color: #856404; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; border-left: 4px solid var(--warn); }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
-        th, td { border: 1px solid #dee2e6; padding: 8px; text-align: left; }
-        th { background: #e9ecef; }
-        .total-row { font-weight: bold; background: #e2e6ea; font-size: 16px; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Print Styles */
-        @media print {
-            body { background: white; padding: 0; }
-            .container { box-shadow: none; max-width: 100%; padding: 0; }
-            .btn-group, h2 { display: none; }
-            #result-area { display: block !important; border: none; }
-            .report-card { border: none; padding: 0; background: white; }
-            input, select { border: none; appearance: none; padding: 0; font-weight: bold; }
-        }
+        .cable-breakdown { background: rgba(255,255,255,0.5); padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 13px; }
+        .cable-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+        .item-count { font-weight: bold; color: #333; }
+        @media (prefers-color-scheme: dark) { .item-count { color: #fff; } }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>⚡ ElectroPro Calculator</h1>
+<div class="app">
+    <h1>⚡ Электро Проект PRO</h1>
 
-    <!-- 1. Основные параметры -->
-    <h2>🏠 Параметры помещения</h2>
-    <div class="grid-2">
-        <div class="form-group">
-            <label>Жилая площадь (м²):</label>
-            <input type="number" id="area" value="50">
-        </div>
-        <div class="form-group">
-            <label>Высота потолков (м):</label>
-            <input type="number" id="height" value="2.7" step="0.1">
-        </div>
-        <div class="form-group">
-            <label>Тип стен:</label>
-            <select id="wallType">
-                <option value="1.0">Бетон / Монолит</option>
-                <option value="1.2">Кирпич</option>
-                <option value="0.8">Дерево / Гипсокартон</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Тип проводки:</label>
-            <select id="wiringType">
-                <option value="hidden">Скрытая (штробление)</option>
-                <option value="open">Открытая (кабель-канал/гофра)</option>
-            </select>
-        </div>
+    <!-- 1. Помещение -->
+    <h2>🏠 Параметры</h2>
+    <div class="form-row">
+        <label>Тип квартиры</label>
+        <select id="aptType" onchange="autoFill()">
+            <option value="custom">Вручную</option>
+            <option value="1">1-комнатная</option>
+            <option value="2">2-комнатная</option>
+            <option value="3">3-комнатная</option>
+        </select>
     </div>
-
-    <!-- 2. Кабель -->
-    <h2>🔌 Кабель и Точки</h2>
-    <div class="grid-2">
-        <div class="form-group">
-            <label>Материал кабеля:</label>
-            <select id="cableMat">
-                <option value="copper">Медь (Рекомендуется)</option>
-                <option value="alum">Алюминий (Только замена)</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Розетки всего (шт):</label>
-            <input type="number" id="sockets" value="15">
-        </div>
-        <div class="form-group">
-            <label>Выключатели (шт):</label>
-            <input type="number" id="switches" value="5">
-        </div>
-        <div class="form-group">
-            <label>Освещение (точки):</label>
-            <input type="number" id="lights" value="5">
-        </div>
+    <div class="form-row">
+        <label>Площадь (м²)</label>
+        <input type="number" id="area" value="50">
     </div>
     
-    <div class="checkbox-group">
-        <input type="checkbox" id="hasWetZone" checked>
-        <label for="hasWetZone" style="margin:0">Есть влажные зоны (Ванная/Кухня) -> Требуется УЗО</label>
+    <!-- Блок расчета кабеля -->
+    <div class="form-row">
+        <label>Сложность трассы:</label>
+        <select id="cableCoef">
+            <option value="1.0">Стандарт (прямые стены)</option>
+            <option value="1.2">Сложно (ниши, много поворотов)</option>
+            <option value="0.9">Просто (минимум изгибов)</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label>Расстояние до самой дальней точки (м):</label>
+        <input type="number" id="maxDist" value="15">
     </div>
 
-    <!-- 3. Защитные устройства -->
-    <h2>🛡️ Защита и Щит</h2>
-    <div class="grid-2">
-        <div class="form-group">
-            <label>Вводной автомат (А):</label>
-            <select id="mainAuto">
-                <option value="32">32 А (Стандарт)</option>
-                <option value="40">40 А</option>
-                <option value="50">50 А</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Количество линий (групп):</label>
-            <input type="number" id="groups" value="6">
-        </div>
-    </div>
-    <div class="checkbox-group">
-        <input type="checkbox" id="useUZO">
-        <label for="useUZO" style="margin:0">Добавить УЗО / Дифавтоматы (+1500 ₽/шт)</label>
+    <div class="form-row">
+        <label>Стены</label>
+        <select id="wallType">
+            <option value="350">Панель (Ж/Б)</option>
+            <option value="280">Монолит/Кирпич</option>
+            <option value="150">ГКЛ/Дерево</option>
+        </select>
     </div>
 
-    <div class="btn-group">
-        <button class="btn-calc" onclick="calculate()">📊 Рассчитать смету</button>
-        <button class="btn-excel" onclick="exportToExcel()">📥 Скачать Excel</button>
-        <button class="btn-history" onclick="window.print()">🖨️ Печать / PDF</button>
+    <!-- 2. Кухня и Техника -->
+    <h2>🍳 Кухня и Техника</h2>
+    <div class="toggle-group"><label>Стиральная машина</label><input type="checkbox" id="washMachine"></div>
+    <div class="toggle-group"><label>Посудомоечная машина</label><input type="checkbox" id="dishWasher"></div>
+    <div class="toggle-group"><label>Духовой шкаф + СВЧ</label><input type="checkbox" id="ovenMicrowave"></div>
+    
+    <div class="toggle-group">
+        <label>Водонагреватель</label>
+        <input type="checkbox" id="boilerCheck" onchange="toggleBoiler()">
+    </div>
+    <div id="boilerOptions" class="sub-option">
+        <label>Тип нагревателя:</label>
+        <select id="boilerType">
+            <option value="storage">Накопительный (~2кВт)</option>
+            <option value="flow">Проточный (~5-7кВт)</option>
+        </select>
+    </div>
+    <div class="form-row" style="margin-top:10px;">
+        <label>Розетки фартука:</label>
+        <input type="number" id="kitchenCounter" value="4">
     </div>
 
-    <div id="result-area"></div>
+    <!-- 3. Санузел -->
+    <h2>🚿 Санузел</h2>
+    <div class="form-row"><label>Розетки в с/у:</label><input type="number" id="bathSockets" value="3"></div>
+    
+    <div class="toggle-group">
+        <label>Теплые полы</label>
+        <input type="checkbox" id="floorHeat" onchange="toggleFloorHeat()">
+    </div>
+    <div id="floorHeatOptions" class="sub-option">
+        <label>Площадь ТП (м²):</label>
+        <input type="number" id="floorHeatArea" value="4">
+    </div>
+
+    <!-- 4. Свет и Розетки -->
+    <h2>💡 Свет и Розетки</h2>
+    <div class="form-row">
+        <label>Освещение комнат + Кухня + Коридор:</label>
+        <input type="number" id="mainLights" value="10">
+    </div>
+    <div class="form-row">
+        <label>Освещение Санузла (отдельно):</label>
+        <input type="number" id="bathLights" value="2">
+    </div>
+    <div class="form-row"><label>Выключатели всего:</label><input type="number" id="switches" value="12"></div>
+    <div class="form-row"><label>Розетки (Комнаты + Гостиная):</label><input type="number" id="roomSockets" value="20"></div>
+
+    <!-- 5. Управление -->
+    <h2>🏠 Управление</h2>
+    <div class="toggle-group">
+        <label>Мастер-клавиша</label>
+        <input type="checkbox" id="masterKey" onchange="toggleMasterKey()">
+    </div>
+    <div id="masterKeyInfo" class="sub-option">
+        <div class="alert">️ Требуется контактор (2 модуля)</div>
+    </div>
+
+    <button class="btn btn-primary" onclick="calculate()">📊 Рассчитать проект</button>
+    <button class="btn btn-secondary" onclick="copyResult()">📋 Копировать смету</button>
+
+    <div id="result"></div>
 </div>
 
 <script>
-    // === БАЗА ЦЕН И ПАРАМЕТРОВ ===
-    const PRICES = {
-        cable_copper_1_5: 45,
-        cable_copper_2_5: 70,
-        cable_copper_4_0: 110,
-        work_strobe_concrete: 300, // за метр
-        work_strobe_brick: 250,
-        work_point: 500, // установка подрозетника + механизма
-        work_light: 400,
-        work_panel: 3000,
-        socket_mech: 150,
-        switch_mech: 120,
-        podrozetnik: 30,
-        box_small: 100,
-        uzo_device: 1500
+    // === ЦЕНЫ ===
+    const P = {
+        cable_1_5: 45, cable_2_5: 70, cable_4_0: 120, cable_6_0: 180,
+        socket: 150, switch: 120, pod: 30, light: 200, 
+        junction_box: 40, // Распредкоробка
+        box: 100, uzo: 1500,
+        contactor: 2500, 
+        work_point: 500, work_light: 400, work_panel: 3500, work_group: 250,
+        floor_heat: 2500
     };
 
-    let lastCalculation = null;
+    const AREA_PRESETS = { '1': 40, '2': 60, '3': 85 };
+
+    function autoFill() {
+        const t = document.getElementById('aptType').value;
+        if(AREA_PRESETS[t]) document.getElementById('area').value = AREA_PRESETS[t];
+    }
+    function toggleBoiler() { document.getElementById('boilerOptions').classList.toggle('visible', document.getElementById('boilerCheck').checked); }
+    function toggleFloorHeat() { document.getElementById('floorHeatOptions').classList.toggle('visible', document.getElementById('floorHeat').checked); }
+    function toggleMasterKey() { document.getElementById('masterKeyInfo').classList.toggle('visible', document.getElementById('masterKey').checked); }
+
+    // === ФУНКЦИЯ РАСЧЕТА КАБЕЛЯ ===
+    function calculateCable(area, totalPoints, maxDist, complexityCoef, hasFloorHeat) {
+        const perimeter = Math.sqrt(area) * 4;
+        let baseLen = perimeter * 1.2; 
+        const pointsLen = totalPoints * 1.5; 
+        const distAdjustment = maxDist > 15 ? (maxDist - 15) * 2 : 0;
+        const fhLen = hasFloorHeat ? 20 : 0;
+        let rawTotal = (baseLen + pointsLen + distAdjustment + fhLen) * complexityCoef;
+        let finalTotal = Math.ceil(rawTotal * 1.15);
+
+        return {
+            total: finalTotal,
+            pwr: Math.ceil(finalTotal * 0.7),
+            light: Math.ceil(finalTotal * 0.3)
+        };
+    }
 
     function calculate() {
-        // 1. Сбор данных
-        const area = parseFloat(document.getElementById('area').value) || 0;
-        const height = parseFloat(document.getElementById('height').value) || 2.7;
-        const wallCoef = parseFloat(document.getElementById('wallType').value);
-        const wiringType = document.getElementById('wiringType').value;
-        const sockets = parseInt(document.getElementById('sockets').value) || 0;
-        const switches = parseInt(document.getElementById('switches').value) || 0;
-        const lights = parseInt(document.getElementById('lights').value) || 0;
-        const hasWetZone = document.getElementById('hasWetZone').checked;
-        const useUZO = document.getElementById('useUZO').checked;
-        const groups = parseInt(document.getElementById('groups').value) || 1;
-
-        // 2. Логика подбора кабеля (Упрощенная инженерная логика)
-        // Свет -> 1.5мм, Розетки -> 2.5мм, Плита/Ввод -> 4-6мм
-        // Примерная длина: Периметр * 1.5 (запас на спуски/подъемы) + 15% технологический запас
-        const perimeter = Math.sqrt(area) * 4; 
-        const rawLength = (perimeter * 1.5 * height/2.7) + (sockets * 0.5); // Эвристическая формула
-        
-        const cableLenLight = Math.ceil(rawLength * 0.3 * 1.15); // 30% длины на свет
-        const cableLenSocket = Math.ceil(rawLength * 0.7 * 1.15); // 70% на розетки
-
-        const costCableLight = cableLenLight * PRICES.cable_copper_1_5;
-        const costCableSocket = cableLenSocket * PRICES.cable_copper_2_5;
-        const totalCableLen = cableLenLight + cableLenSocket;
-
-        // 3. Расчет материалов
-        const countPodrozetniki = sockets + switches;
-        const costMaterials = 
-            costCableLight + costCableSocket +
-            (countPodrozetniki * PRICES.podrozetnik) +
-            (sockets * PRICES.socket_mech) +
-            (switches * PRICES.switch_mech) +
-            (lights * 200) + // лампы/люстры условно
-            (groups * PRICES.box_small) + // распредкоробки
-            (useUZO ? (2 * PRICES.uzo_device) : 0); // Берем 2 УЗО для примера
-
-        // 4. Расчет работ
-        let strobePrice = (wallCoef === 1.0) ? PRICES.work_strobe_concrete : PRICES.work_strobe_brick;
-        if (wiringType === 'open') strobePrice = 100; // Кабель канал дешевле
-
-        const workStrobe = Math.ceil(totalCableLen * 0.8) * strobePrice; // 80% кабеля идет в штробу/канал
-        const workPoints = (sockets + switches) * PRICES.work_point;
-        const workLights = lights * PRICES.work_light;
-        const workPanel = PRICES.work_panel + (groups * 200); // Сборка щита
-
-        const totalWork = workStrobe + workPoints + workLights + workPanel;
-        const grandTotal = costMaterials + totalWork;
-
-        // 5. Проверки безопасности
-        let warnings = [];
-        if (hasWetZone && !useUZO) {
-            warnings.push("⚠️ <b>Внимание:</b> Во влажных зонах (ванна, кухня) наличие УЗО обязательно по ПУЭ!");
-        }
-        if (document.getElementById('cableMat').value === 'alum') {
-            warnings.push("⚠️ <b>Совет:</b> Алюминий запрещен для новой скрытой проводки. Используйте медь.");
-        }
-
-        // 6. Формирование отчета
-        lastCalculation = {
-            date: new Date().toLocaleString(),
-            total: grandTotal,
-            details: {
-                "Кабель 1.5мм (свет)": `${cableLenLight} м`,
-                "Кабель 2.5мм (розетки)": `${cableLenSocket} м`,
-                "Подрозетники": countPodrozetniki,
-                "Штробление/Канал": `${Math.ceil(totalCableLen * 0.8)} м`,
-                "Установка точек": sockets + switches,
-                "Сборка щита": "1 шт"
-            }
-        };
-        saveHistory(lastCalculation);
-
-        const resultHTML = `
-            ${warnings.map(w => `<div class="alert alert-danger">${w}</div>`).join('')}
+        try {
+            const area = parseFloat(document.getElementById('area').value) || 0;
+            const wallPrice = parseFloat(document.getElementById('wallType').value);
+            const cableCoef = parseFloat(document.getElementById('cableCoef').value);
+            const maxDist = parseFloat(document.getElementById('maxDist').value) || 15;
             
-            <div class="report-card">
-                <h3 style="margin-top:0">📑 Итоговая смета</h3>
+            // Техника
+            const hasWash = document.getElementById('washMachine').checked;
+            const hasDish = document.getElementById('dishWasher').checked;
+            const hasOven = document.getElementById('ovenMicrowave').checked;
+            const hasBoiler = document.getElementById('boilerCheck').checked;
+            const boilerType = document.getElementById('boilerType').value;
+            
+            // Санузел
+            const bathSockets = parseInt(document.getElementById('bathSockets').value) || 0;
+            const hasFloorHeat = document.getElementById('floorHeat').checked;
+            const floorHeatArea = parseInt(document.getElementById('floorHeatArea').value) || 0;
+
+            // Свет и Розетки
+            const mainLights = parseInt(document.getElementById('mainLights').value) || 0;
+            const bathLights = parseInt(document.getElementById('bathLights').value) || 0;
+            const kCounter = parseInt(document.getElementById('kitchenCounter').value) || 0;
+            const roomSockets = parseInt(document.getElementById('roomSockets').value) || 0;
+            const switches = parseInt(document.getElementById('switches').value) || 0;
+            const hasMasterKey = document.getElementById('masterKey').checked;
+
+            // Подсчет всего
+            const totalSockets = kCounter + roomSockets + bathSockets + (hasWash?1:0) + (hasDish?1:0) + (hasOven?1:0) + (hasBoiler?1:0);
+            const totalLights = mainLights + bathLights;
+            const totalPoints = totalSockets + totalLights + switches;
+
+            // === ПОДСЧЕТ ПОДРОЗЕТНИКОВ И КОРОБОК ===
+            // 1 подрозетник на каждую розетку и выключатель
+            const countPodrozetniki = totalSockets + switches;
+            
+            // Распредкоробки: примерно 1 на каждые 5-6 точек + запас
+            const countJunctionBoxes = Math.ceil(totalPoints / 5) + 2;
+
+            // === РАСЧЕТ КАБЕЛЯ ===
+            const cableData = calculateCable(area, totalPoints, maxDist, cableCoef, hasFloorHeat);
+            const lenPwr = cableData.pwr;   
+            const lenLight = cableData.light;
+
+            // === ГРУППЫ ЩИТА ===
+            let groups = [];
+            groups.push({name: "Вводной автомат + Реле напряжения", type: "main"});
+
+            if(hasWash) groups.push({name: "Стиральная машина", w: 2.5});
+            if(hasDish) groups.push({name: "ПММ", w: 2.5});
+            if(hasOven) groups.push({name: "Духовка + СВЧ", w: 2.5});
+            if(hasBoiler) {
+                let w = (boilerType === 'flow') ? 6.0 : 2.5;
+                groups.push({name: (boilerType === 'flow' ? "Проточный (3x6)" : "Бойлер (3x2.5)"), w: w});
+            }
+            if(kCounter > 0) groups.push({name: "Розетки фартука", w: 2.5});
+            if(bathSockets > 0) groups.push({name: "Розетки с/у (УЗО)", w: 2.5});
+            if(hasFloorHeat) groups.push({name: "Теплые полы", w: 2.5});
+            
+            if(mainLights > 0) groups.push({name: `Свет основной (${mainLights} т.)`, w: 1.5});
+            if(bathLights > 0) groups.push({name: "Свет с/у (УЗО)", w: 1.5});
+            
+            const roomSockGroups = Math.ceil(roomSockets / 8);
+            for(let i=1; i<=roomSockGroups; i++) groups.push({name: `Розетки комн. гр.${i}`, w: 2.5});
+            
+            if(hasMasterKey) groups.push({name: "Контактор", w: 0, type: 'contactor'});
+
+            // === СТОИМОСТЬ ===
+            const costCablePwr = lenPwr * P.cable_2_5; 
+            const costCableLight = lenLight * P.cable_1_5;
+            
+            const costSocketsMech = totalSockets * P.socket;
+            const costSwitchesMech = switches * P.switch;
+            
+            // Подрозетники (материал)
+            const costPodrozetniki = countPodrozetniki * P.pod;
+            // Распредкоробки (материал)
+            const costJunctionBoxes = countJunctionBoxes * P.junction_box;
+
+            const costLights = totalLights * P.light;
+            const costBoxes = groups.length * P.box; // Щитовые модули/рейки
+            const costFloorHeat = hasFloorHeat ? (floorHeatArea * 1500 + P.floor_heat) : 0;
+            const costContactor = hasMasterKey ? P.contactor : 0;
+            const costUZO = 3 * P.uzo;
+
+            const totalMaterials = costCablePwr + costCableLight + costSocketsMech + costSwitchesMech + 
+                                   costPodrozetniki + costJunctionBoxes + costLights + costBoxes + 
+                                   costUZO + costFloorHeat + costContactor;
+
+            // Работы
+            const workStrobe = (lenPwr + lenLight) * wallPrice * 0.8;
+            const workInstallPoints = totalSockets * P.work_point;
+            const workInstallLights = totalLights * P.work_light;
+            const workFloorHeat = hasFloorHeat ? (floorHeatArea * 500) : 0;
+            const workContactor = hasMasterKey ? 1500 : 0;
+            const workPanel = P.work_panel + (groups.length * P.work_group);
+
+            const totalWork = workStrobe + workInstallPoints + workInstallLights + workFloorHeat + workContactor + workPanel;
+            const grandTotal = totalMaterials + totalWork;
+
+            // === ВЫВОД ===
+            let alerts = "";
+            if(hasBoiler && boilerType === 'flow') alerts += "<div class='alert'>⚠️ Проточный требует кабель 3x6!</div>";
+            if(groups.length > 12) alerts += "<div class='alert'>ℹ️ Щит >12 модулей. Нужен двухрядный.</div>";
+
+            let groupHtml = groups.map(g => {
+                if(g.type === 'contactor') return `<li><span>${g.name}</span> <span>2 мод</span></li>`;
+                return `<li><span>${g.name}</span> <span>${g.w?g.w+'мм²':'-'}</span></li>`;
+            }).join('');
+
+            const html = `
+                ${alerts}
                 
-                <table>
-                    <thead><tr><th>Наименование</th><th>Кол-во/Длина</th><th>Стоимость</th></tr></thead>
-                    <tbody>
-                        <tr><td colspan="3"><b>Материалы</b></td></tr>
-                        <tr><td>Кабель ВВГнг 3х1.5</td><td>${cableLenLight} м</td><td>${costCableLight} ₽</td></tr>
-                        <tr><td>Кабель ВВГнг 3х2.5</td><td>${cableLenSocket} м</td><td>${costCableSocket} ₽</td></tr>
-                        <tr><td>Розетки/Выкл (механизмы)</td><td>${sockets+switches} шт</td><td>${(sockets*PRICES.socket_mech)+(switches*PRICES.switch_mech)} ₽</td></tr>
-                        <tr><td>Подрозетники и мелочевка</td><td>${countPodrozetniki} шт</td><td>~${countPodrozetniki * PRICES.podrozetnik + 500} ₽</td></tr>
-                        ${useUZO ? `<tr><td>УЗО / Дифавтоматы</td><td>2 шт</td><td>${2*PRICES.uzo_device} ₽</td></tr>` : ''}
-                        
-                        <tr><td colspan="3"><b>Работы</b></td></tr>
-                        <tr><td>Штробление / Монтаж канала</td><td>${Math.ceil(totalCableLen * 0.8)} м</td><td>${workStrobe} ₽</td></tr>
-                        <tr><td>Установка подрозетников и механизмов</td><td>${sockets+switches} шт</td><td>${workPoints} ₽</td></tr>
-                        <tr><td>Сборка электрощита</td><td>1 компл.</td><td>${workPanel} ₽</td></tr>
-                    </tbody>
-                    <tfoot>
-                        <tr class="total-row"><td colspan="2">ИТОГО ПОД КЛЮЧ:</td><td>${grandTotal} ₽</td></tr>
-                    </tfoot>
-                </table>
-                <p style="font-size:12px; color:#666; margin-top:10px;">* Расчет является предварительным. Длина кабеля включает запас 15%.</p>
-            </div>
-        `;
+                <div style="font-weight:bold; margin-bottom:5px;">📦 Материалы (количество):</div>
+                <div class="cable-breakdown">
+                    <div class="cable-row"><span> ВВГнг 3×2.5 (Силовой):</span> <b>${lenPwr} м</b></div>
+                    <div class="cable-row"><span>🧵 ВВГнг 3×1.5 (Свет):</span> <b>${lenLight} м</b></div>
+                    <div class="cable-row"><span>🔌 Механизмы (розетки):</span> <span class="item-count">${totalSockets} шт</span></div>
+                    <div class="cable-row"><span>🔲 Механизмы (выкл):</span> <span class="item-count">${switches} шт</span></div>
+                    <div class="cable-row" style="background:rgba(0,122,255,0.1); padding:5px; border-radius:4px;"><span>🏺 <b>Подрозетники:</b></span> <span class="item-count"><b>${countPodrozetniki} шт</b></span></div>
+                    <div class="cable-row"><span> Распред. коробки:</span> <span class="item-count">~${countJunctionBoxes} шт</span></div>
+                </div>
 
-        const resDiv = document.getElementById('result-area');
-        resDiv.innerHTML = resultHTML;
-        resDiv.style.display = 'block';
+                <div style="font-weight:bold; margin-bottom:5px;">📋 Схема щита (${groups.length} групп):</div>
+                <ul class="group-list">${groupHtml}</ul>
+                
+                <hr style="border:0; border-top:1px dashed #ccc; margin:10px 0;">
+                <div style="display:flex; justify-content:space-between;"><span>Материалы (сумма):</span> <span>${totalMaterials} ₽</span></div>
+                <div style="display:flex; justify-content:space-between;"><span>Работы (сумма):</span> <span>${totalWork} ₽</span></div>
+                <div class="total-price">ИТОГО: ${grandTotal} ₽</div>
+            `;
+
+            const resDiv = document.getElementById('result');
+            resDiv.innerHTML = html;
+            resDiv.style.display = 'block';
+            resDiv.scrollIntoView({behavior:'smooth'});
+
+            window.lastData = `Проект на ${area}м²\nКабель: ${cableData.total}м\nПодрозетники: ${countPodrozetniki} шт\nИтого: ${grandTotal} руб.`;
+
+        } catch(e) { alert("Ошибка: "+e.message); console.error(e); }
     }
 
-    // === ЭКСПОРТ В EXCEL (CSV) ===
-    function exportToExcel() {
-        if (!lastCalculation) { alert("Сначала сделайте расчет!"); return; }
-        
-        let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // BOM для кириллицы
-        csvContent += "Параметр;Значение\n";
-        csvContent += `Дата;${lastCalculation.date}\n`;
-        csvContent += `ИТОГО;${lastCalculation.total} руб.\n\n`;
-        csvContent += "Наименование;Количество\n";
-        
-        for (const [key, value] of Object.entries(lastCalculation.details)) {
-            csvContent += `${key};${value}\n`;
-        }
-
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "smeta_electro.csv");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
-    // === ИСТОРИЯ (LOCAL STORAGE) ===
-    function saveHistory(data) {
-        let history = JSON.parse(localStorage.getItem('electroHistory') || '[]');
-        history.unshift(data); // Добавить в начало
-        if (history.length > 10) history.pop(); // Хранить только последние 10
-        localStorage.setItem('electroHistory', JSON.stringify(history));
+    function copyResult() {
+        if(!window.lastData) return;
+        navigator.clipboard.writeText(window.lastData).then(() => alert("Скопировано!"));
     }
 </script>
 
 </body>
 </html>
-
