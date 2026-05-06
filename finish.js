@@ -1,7 +1,6 @@
-let bathCount = 1;
 let rooms = [];
 let roomIdCounter = 0;
-let lastCalculationData = null;
+let dataWasLoaded = false;
 
 // Шаблоны помещений
 const roomTemplates = [
@@ -20,13 +19,120 @@ const roomTemplates = [
 
 window.onload = function() {
     renderRoomSelector();
-    toggleRoom('living');
-    toggleRoom('kitchen');
-    toggleRoom('bedroom');
-    toggleRoom('bathroom');
-    toggleRoom('hallway');
+    
+    // Пытаемся загрузить данные из черновой
+    const loaded = loadRoughData();
+    dataWasLoaded = loaded;
+    
+    if (!loaded) {
+        // Если данных нет, выбираем стандартный набор
+        toggleRoom('living');
+        toggleRoom('kitchen');
+        toggleRoom('bedroom');
+        toggleRoom('bathroom');
+        toggleRoom('hallway');
+    }
+    
     calculate();
+    updateDataStatus();
 };
+
+// === ЗАГРУЗКА ДАННЫХ ИЗ ЧЕРНОВОЙ ===
+function loadRoughData() {
+    try {
+        const saved = localStorage.getItem('roughElectroData');
+        if (!saved) return false;
+        
+        const data = JSON.parse(saved);
+        
+        // Проверка актуальности (не старше 7 дней)
+        const savedDate = new Date(data.timestamp);
+        const now = new Date();
+        const diffDays = (now - savedDate) / (1000 * 60 * 60 * 24);
+        
+        if (diffDays > 7) {
+            console.log('🕐 Данные устарели (>7 дней), игнорируем');
+            return false;
+        }
+        
+        // Очищаем текущие комнаты
+        rooms = [];
+        roomIdCounter = 0;
+        
+        // Восстанавливаем комнаты
+        data.rooms.forEach(r => {
+            const id = roomIdCounter++;
+            rooms.push({
+                id,
+                templateId: r.templateId,
+                name: r.name,
+                hasSockets: r.hasSockets, socketCount: r.socketCount,
+                hasSwitches: r.hasSwitches, switchCount: r.switchCount,
+                hasNet: r.hasNet, netCount: r.netCount,
+                hasTv: r.hasTv, tvCount: r.tvCount,
+                hasCeiling: r.hasCeiling, ceilingCount: r.ceilingCount,
+                hasSconces: r.hasSconces, sconceCount: r.sconceCount,
+                hasBacklight: r.hasBacklight, backlightCount: r.backlightCount,
+                hasAC: r.hasAC, acCount: r.acCount
+            });
+        });
+        
+        // Обновляем UI
+        renderRooms();
+        updateSelectorVisuals();
+        
+        // Показываем уведомление
+        showImportNotification(data.rooms.length);
+        
+        return true;
+        
+    } catch(e) {
+        console.error('❌ Ошибка загрузки данных:', e);
+        return false;
+    }
+}
+
+function showImportNotification(count) {
+    const notify = document.createElement('div');
+    notify.className = 'alert';
+    notify.style.cssText = 'position:fixed;top:20px;right:20px;z-index:1000;max-width:300px;';
+    notify.innerHTML = `✅ Загружено ${count} помещений из черновой!<br><small style="color:#666">Можно скорректировать значения</small>`;
+    document.body.appendChild(notify);
+    
+    setTimeout(() => {
+        notify.style.transition = 'opacity 0.5s';
+        notify.style.opacity = '0';
+        setTimeout(() => notify.remove(), 500);
+    }, 4000);
+}
+
+function clearSavedData() {
+    if (confirm('Удалить сохраненные данные черновой отделки?')) {
+        localStorage.removeItem('roughElectroData');
+        document.getElementById('dataStatus').textContent = '🗑️ Данные очищены';
+        setTimeout(() => {
+            document.getElementById('dataStatus').textContent = '';
+        }, 3000);
+    }
+}
+
+function updateDataStatus() {
+    const statusEl = document.getElementById('dataStatus');
+    const saved = localStorage.getItem('roughElectroData');
+    
+    if (saved) {
+        try {
+            const data = JSON.parse(saved);
+            const date = new Date(data.timestamp).toLocaleDateString('ru-RU');
+            statusEl.textContent = `📦 Данные от ${date}`;
+            statusEl.title = `Загружено помещений: ${data.rooms.length}`;
+        } catch(e) {
+            statusEl.textContent = '⚠️ Ошибка данных';
+        }
+    } else {
+        statusEl.textContent = '';
+    }
+}
 
 // --- ФУНКЦИИ UI ---
 
@@ -44,6 +150,7 @@ function handleCheckboxChange(templateId) {
     const checkbox = document.getElementById(`cb_${templateId}`);
     if (checkbox.checked) addRoomFromTemplate(templateId);
     else removeRoomByTemplate(templateId);
+    
     updateSelectorVisuals();
     renderRooms();
     calculate();
@@ -65,25 +172,14 @@ function updateSelectorVisuals() {
 }
 
 function addRoomFromTemplate(templateId) {
-    if (templateId === 'bathroom') {
-        const existingBaths = rooms.filter(r => r.templateId === 'bathroom' || r.templateId === 'bathroom2');
-        if (existingBaths.length >= bathCount) return; 
-    }
-    if (templateId !== 'bathroom' && rooms.find(r => r.templateId === templateId)) return;
+    if (rooms.find(r => r.templateId === templateId)) return;
 
     const template = roomTemplates.find(r => r.id === templateId);
     if (!template) return;
 
     const id = roomIdCounter++;
-    let finalName = template.name;
-    
-    if (templateId === 'bathroom') {
-        const existingBaths = rooms.filter(r => r.templateId === 'bathroom' || r.templateId === 'bathroom2');
-        if (existingBaths.length > 0) finalName = 'Санузел 2';
-    }
-
     rooms.push({ 
-        id, templateId, name: finalName, 
+        id, templateId, name: template.name, 
         hasSockets: true, socketCount: template.sockets, 
         hasSwitches: true, switchCount: template.switches, 
         hasAC: template.ac > 0, acCount: template.ac,
@@ -96,70 +192,12 @@ function addRoomFromTemplate(templateId) {
 }
 
 function removeRoomByTemplate(templateId) {
-    if (templateId === 'bathroom') {
-        const existingBaths = rooms.filter(r => r.templateId === 'bathroom' || r.templateId === 'bathroom2');
-        if (existingBaths.length > 0) {
-             document.getElementById('cb_bathroom').checked = true;
-             return;
-        }
-    }
     rooms = rooms.filter(r => r.templateId !== templateId);
-}
-
-function setBathCount(count) {
-    bathCount = count;
-    document.getElementById('bath1Btn').classList.toggle('active', count === 1);
-    document.getElementById('bath2Btn').classList.toggle('active', count === 2);
-    
-    const bathCheckbox = document.getElementById('cb_bathroom');
-    
-    if (count > 0) {
-        bathCheckbox.checked = true;
-        const currentBaths = rooms.filter(r => r.templateId === 'bathroom' || r.templateId === 'bathroom2');
-        
-        if (currentBaths.length < count) {
-            for (let i = currentBaths.length; i < count; i++) addRoomFromTemplate('bathroom');
-        } else if (currentBaths.length > count) {
-            const toKeep = currentBaths.slice(0, count).map(r => r.id);
-            rooms = rooms.filter(r => {
-                if (r.templateId === 'bathroom' || r.templateId === 'bathroom2') return toKeep.includes(r.id);
-                return true;
-            });
-        }
-    } else {
-        bathCheckbox.checked = false;
-        rooms = rooms.filter(r => r.templateId !== 'bathroom' && r.templateId !== 'bathroom2');
-    }
-    
-    updateSelectorVisuals();
-    renderRooms();
-    calculate();
-}
-
-function toggleBoiler() { 
-    document.getElementById('boilerOptions').classList.toggle('visible', document.getElementById('boilerCheck').checked); 
-    calculate();
-}
-
-function toggleFloorHeat() { 
-    const zones = parseInt(document.getElementById('floorHeatZones').value);
-    document.getElementById('floorHeatOptions').classList.toggle('visible', zones > 0);
-    calculate();
-}
-
-function toggleMasterKey() { 
-    document.getElementById('masterKeyInfo').classList.toggle('visible', document.getElementById('masterKey').checked); 
-    calculate();
 }
 
 function removeRoom(id) {
     const room = rooms.find(r => r.id === id);
     if (!room) return;
-
-    if (room.templateId === 'bathroom' || room.templateId === 'bathroom2') {
-        alert("Чтобы убрать санузел, измените количество санузлов в настройках выше");
-        return;
-    }
 
     rooms = rooms.filter(r => r.id !== id);
     if (room.templateId) {
@@ -195,8 +233,10 @@ function updateRoomName(id, value) {
 }
 
 function renderRooms() {
+    const importedClass = dataWasLoaded ? 'imported' : '';
+    
     document.getElementById('roomsContainer').innerHTML = rooms.map(room => `
-        <div class="room-card">
+        <div class="room-card ${importedClass}">
             <div class="room-header">
                 <input type="text" class="room-name-input" value="${room.name}" onchange="updateRoomName(${room.id}, this.value)">
                 <button class="room-remove" onclick="removeRoom(${room.id})">✕</button>
@@ -239,67 +279,23 @@ function renderRooms() {
     `).join('');
 }
 
-// === СОХРАНЕНИЕ ДАННЫХ ДЛЯ ЧИСТОВОЙ ===
-function saveRoughDataForFinish(inputData, stats) {
-    const finishData = {
-        rooms: rooms.map(r => ({
-            templateId: r.templateId,
-            name: r.name,
-            hasSockets: r.hasSockets, socketCount: r.socketCount,
-            hasSwitches: r.hasSwitches, switchCount: r.switchCount,
-            hasNet: r.hasNet, netCount: r.netCount,
-            hasTv: r.hasTv, tvCount: r.tvCount,
-            hasCeiling: r.hasCeiling, ceilingCount: r.ceilingCount,
-            hasSconces: r.hasSconces, sconceCount: r.sconceCount,
-            hasBacklight: r.hasBacklight, backlightCount: r.backlightCount,
-            hasAC: r.hasAC, acCount: r.acCount
-        })),
-        stats: { ...stats },
-        timestamp: new Date().toISOString()
-    };
-    
-    try {
-        localStorage.setItem('roughElectroData', JSON.stringify(finishData));
-        console.log('✅ Данные сохранены для чистовой отделки');
-    } catch(e) {
-        console.warn('⚠️ Не удалось сохранить данные:', e);
-    }
-}
-
 // --- ГЛАВНАЯ ФУНКЦИЯ CALCULATE ---
 
 function calculate() {
     try {
-        const inputData = {
-            area: parseFloat(document.getElementById('area').value) || 0,
-            wallPrice: parseFloat(document.getElementById('wallType').value) || 280,
-            cableCoef: parseFloat(document.getElementById('cableCoef').value) || 1.3,
-            maxDist: parseFloat(document.getElementById('maxDist').value) || 25,
-            
-            hasWash: document.getElementById('washMachine').checked,
-            hasDish: document.getElementById('dishWasher').checked,
-            hasOven: document.getElementById('ovenMicrowave').checked,
-            hasBoiler: document.getElementById('boilerCheck').checked,
-            boilerType: document.getElementById('boilerType').value,
-            
-            floorHeatZones: parseInt(document.getElementById('floorHeatZones').value) || 0,
-            floorHeatArea: parseInt(document.getElementById('floorHeatArea').value) || 0,
-            tpRegs: parseInt(document.getElementById('tpRegulators').value) || 0,
-            
-            hasMasterKey: document.getElementById('masterKey').checked,
-            roomsData: rooms
-        };
+        const tpRegsGlobal = parseInt(document.getElementById('tpRegulatorsGlobal').value) || 0;
+        const acUnitsGlobal = parseInt(document.getElementById('acUnitsGlobal').value) || 0;
 
         let stats = {
-            sockets: 0, switches: 0, ac: 0,
+            sockets: 0, switches: 0, ac: acUnitsGlobal,
             ceiling: 0, sconces: 0, backlight: 0,
-            net: 0, tv: 0
+            net: 0, tv: 0,
+            tpRegs: tpRegsGlobal
         };
 
         rooms.forEach(r => {
             if(r.hasSockets) stats.sockets += r.socketCount;
             if(r.hasSwitches) stats.switches += r.switchCount;
-            if(r.hasAC) stats.ac += r.acCount;
             if(r.hasCeiling) stats.ceiling += r.ceilingCount;
             if(r.hasSconces) stats.sconces += r.sconceCount;
             if(r.hasBacklight) stats.backlight += r.backlightCount;
@@ -307,25 +303,9 @@ function calculate() {
             if(r.hasTv) stats.tv += r.tvCount;
         });
 
-        if(inputData.hasWash) stats.sockets++;
-        if(inputData.hasDish) stats.sockets++;
-        if(inputData.hasOven) stats.sockets++;
-        if(inputData.hasBoiler) stats.sockets++;
-
-        const totalPoints = stats.sockets + stats.switches + stats.ceiling + stats.sconces + stats.backlight + 
-                            stats.net + stats.tv + inputData.tpRegs + stats.ac;
-        
-        const countPodrozetniki = stats.sockets + stats.switches + stats.net + stats.tv + inputData.tpRegs + stats.ac;
-        const countJunctionBoxes = Math.ceil(totalPoints / 6) + 2;
-
-        const cableData = calculateCableLength(inputData.area, totalPoints, inputData.maxDist, inputData.cableCoef, stats.ac, stats.backlight);
-        const panelData = calculatePanel(inputData, stats);
-        const genMats = calculateGeneralMaterials(inputData, cableData, countPodrozetniki, countJunctionBoxes);
-        const genWorks = calculateGeneralWorks(inputData, cableData, countPodrozetniki, panelData.workCost);
-
-        const totalMat = genMats.cablePwr + genMats.cableLight + genMats.pods + genMats.boxes + genMats.fhMat + panelData.materialCost;
-        const totalWrk = genWorks.strobe + genWorks.pods + genWorks.fhMat + panelData.workCost;
-        const grandTotal = totalMat + totalWrk;
+        const matData = calculateFinishMaterials(stats);
+        const workData = calculateFinishWorks(stats);
+        const grandTotal = matData.total + workData.total;
 
         let roomSummary = rooms.map(r => {
             let badges = [];
@@ -336,48 +316,43 @@ function calculate() {
             if(r.hasCeiling) badges.push(`${r.ceilingCount}`);
             if(r.hasSconces) badges.push(`🕯️${r.sconceCount}`);
             if(r.hasBacklight) badges.push(`✨${r.backlightCount}`);
-            if(r.hasAC) badges.push(`❄️${r.acCount}`);
             return `<span class="summary-badge">${r.name}: ${badges.join(' ')}</span>`;
         }).join('');
 
-        const utpLen = (stats.net + stats.tv) > 0 ? Math.ceil((stats.net + stats.tv) * 8 * 1.2) : 0;
-        const bathCountInList = inputData.roomsData.filter(r => r.templateId === 'bathroom' || r.templateId === 'bathroom2').length;
-
         const html = `
-            <div class="alert">🏗️ Черновая отделка | Санузлов: ${bathCountInList}</div>
+            <div class="alert">✨ Чистовая отделка</div>
             <div style="margin:10px 0">${roomSummary}</div>
             
-            <div style="font-weight:bold;margin-bottom:10px;">📦 Расчет материалов:</div>
+            <div style="font-weight:bold;margin-bottom:10px;">📦 Материалы:</div>
             <div class="cable-breakdown">
-                <div class="cable-row"><span>🔌 ВВГнг 3×2.5 (Силовой):</span> <b>${cableData.pwr} м</b></div>
-                <div class="cable-row"><span>💡 ВВГнг 3×1.5 (Свет):</span> <b>${cableData.light} м</b></div>
-                ${utpLen > 0 ? `<div class="cable-row"><span>📡 Кабель UTP (витая пара):</span> <b>~${utpLen} м</b></div>` : ''}
-                ${cableData.ac > 0 ? `<div class="cable-row"><span>❄️ Кабель на кондиционеры:</span> <b>~${cableData.ac} м</b></div>` : ''}
-                
-                <hr style="border:0; border-top:1px dashed #ccc; margin:8px 0;">
-                
-                <div class="cable-row" style="background:rgba(255,149,0,0.15);padding:5px;border-radius:4px;">
-                    <span>🏺 <b>Подрозетники:</b></span> <b>${countPodrozetniki} шт</b>
-                </div>
-                <div class="cable-row"><span>📦 Распред. коробки:</span> ~${countJunctionBoxes} шт</div>
-                ${inputData.floorHeatZones > 0 ? `<div class="cable-row"><span>🔥 Маты ТП:</span> ${inputData.floorHeatArea} м²</div>` : ''}
+                <div class="cable-row"><span>🔌 Розетки:</span> <b>${stats.sockets} шт</b> (${matData.details.sockets.toLocaleString()} ₽)</div>
+                <div class="cable-row"><span>🔲 Выключатели:</span> <b>${stats.switches} шт</b> (${matData.details.switches.toLocaleString()} ₽)</div>
+                <div class="cable-row"><span>🌐 Интернет:</span> <b>${stats.net} шт</b> (${matData.details.net.toLocaleString()} ₽)</div>
+                <div class="cable-row"><span>📺 ТВ:</span> <b>${stats.tv} шт</b> (${matData.details.tv.toLocaleString()} ₽)</div>
+                <div class="cable-row"><span>💡 Светильники:</span> <b>${stats.ceiling} шт</b> (${matData.details.ceiling.toLocaleString()} ₽)</div>
+                <div class="cable-row"><span>🕯️ Бра:</span> <b>${stats.sconces} шт</b> (${matData.details.sconces.toLocaleString()} ₽)</div>
+                <div class="cable-row"><span>✨ Подсветка:</span> <b>${stats.backlight} зон</b> (${matData.details.backlight.toLocaleString()} ₽)</div>
+                <div class="cable-row"><span>🌡️ Терморегуляторы ТП:</span> <b>${stats.tpRegs} шт</b> (${matData.details.tpRegs.toLocaleString()} ₽)</div>
             </div>
 
-            ${generatePanelHTML(panelData)}
+            <div style="font-weight:bold;margin:15px 0 5px;">🛠️ Работы:</div>
+            <div class="cable-breakdown">
+                <div class="cable-row"><span>Установка механизмов:</span> <b>${workData.details.mechanisms.toLocaleString()} ₽</b></div>
+                <div class="cable-row"><span>Подключение света:</span> <b>${(workData.details.ceiling + workData.details.sconces + workData.details.backlight).toLocaleString()} ₽</b></div>
+                <div class="cable-row"><span>Навеска кондиционеров:</span> <b>${workData.details.ac.toLocaleString()} ₽</b></div>
+                <div class="cable-row"><span>Установка ТП регуляторов:</span> <b>${workData.details.tpRegs.toLocaleString()} ₽</b></div>
+            </div>
             
             <hr style="border:0;border-top:1px dashed #ccc;margin:15px 0;">
-            <div style="display:flex;justify-content:space-between;"><span>Материалы:</span> <span>${totalMat.toLocaleString()} ₽</span></div>
-            <div style="display:flex;justify-content:space-between;"><span>Работы:</span> <span>${totalWrk.toLocaleString()} ₽</span></div>
+            <div style="display:flex;justify-content:space-between;"><span>Материалы:</span> <span>${matData.total.toLocaleString()} ₽</span></div>
+            <div style="display:flex;justify-content:space-between;"><span>Работы:</span> <span>${workData.total.toLocaleString()} ₽</span></div>
             <div class="total-price">ИТОГО: ${grandTotal.toLocaleString()} ₽</div>
         `;
 
         document.getElementById('result').innerHTML = html;
         document.getElementById('result').style.display = 'block';
 
-        window.lastData = `ЧЕРНОВАЯ ${inputData.area}м²\nРозетки: ${stats.sockets} | Интернет: ${stats.net} | ТВ: ${stats.tv}\nГрупп щита: ${panelData.groups.length}\nИтого: ${grandTotal} ₽`;
-
-        // СОХРАНЯЕМ ДАННЫЕ ДЛЯ ЧИСТОВОЙ
-        saveRoughDataForFinish(inputData, stats);
+        window.lastData = `ЧИСТОВАЯ\nРозетки: ${stats.sockets} | Выкл: ${stats.switches}\nСвет: ${stats.ceiling} | Бра: ${stats.sconces}\nИтого: ${grandTotal} ₽`;
 
     } catch(e) { 
         alert("Ошибка расчета: "+e.message); 

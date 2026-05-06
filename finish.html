@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ Чистовая электрика</title>
+    <link rel="stylesheet" href="finish.css">
+</head>
+<body>
+
+<div class="app">
+    <h1>✨ Чистовая электрика</h1>
+    <div class="mode-indicator">Установка розеток, выключателей, светильников, терморегуляторов</div>
+
+    <!-- ВЫБОР ПОМЕЩЕНИЙ -->
+    <h2>🏠 Выбор помещений</h2>
+    <div class="room-selector-grid" id="roomSelector"></div>
+    
+    <div class="phase-note">
+        <strong>💡 Подсказка:</strong> Выберите комнаты, где будут установлены чистовые элементы. Количество точек берется из настроек черновой или задается вручную.
+    </div>
+
+    <!-- СПИСОК ПОМЕЩЕНИЙ -->
+    <h2>📋 Детализация помещений</h2>
+    <div id="roomsContainer"></div>
+
+    <!-- ДОПОЛНИТЕЛЬНЫЕ ПАРАМЕТРЫ -->
+    <h2>⚙️ Дополнительно</h2>
+    
+    <div class="form-row">
+        <label>Терморегуляторы ТП (шт):</label>
+        <input type="number" id="tpRegulatorsGlobal" value="2">
+    </div>
+
+    <div class="form-row">
+        <label>Кондиционеры (внутренние блоки, шт):</label>
+        <input type="number" id="acUnitsGlobal" value="2">
+    </div>
+
+    <button class="btn btn-finish" onclick="calculate()">📊 Рассчитать чистовую</button>
+    <button class="btn btn-secondary" onclick="copyResult()">📋 Копировать</button>
+    <button class="btn btn-secondary" onclick="clearSavedData()">🗑️ Очистить данные</button>
+
+    <div id="result"></div>
+    
+    <div class="navigation">
+        <a href="index.html" class="nav-link">← Вернуться к черновой отделке</a>
+        <span id="dataStatus" style="margin-left:10px;font-size:12px;color:#666;"></span>
+    </div>
+</div>
+
+<!-- ВАЖНО: Порядок подключения скриптов! -->
+<script src="finish_materials.js"></script>
+<script src="finish_installation.js"></script>
+<script src="finish.js"></script>
+</body>
+</html>
