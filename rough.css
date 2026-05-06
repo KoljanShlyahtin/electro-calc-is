@@ -361,3 +361,24 @@ input:focus, select:focus {
     .room-card { background: rgba(255,255,255,0.03); }
     .room-check-item { background: rgba(255,255,255,0.05); }
 }
+.navigation {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.nav-link {
+    display: inline-block;
+    padding: 12px 24px;
+    background: #34C759;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: background 0.2s;
+    box-shadow: 0 4px 10px rgba(52,199,89,0.3);
+}
+
+.nav-link:hover {
+    background: #28a745;
+    transform: translateY(-2px);
+}
