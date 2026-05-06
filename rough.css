@@ -1,0 +1,363 @@
+:root { 
+    --primary: #007AFF; 
+    --rough: #FF9500; 
+    --bg: #F2F2F7; 
+    --card: #FFFFFF; 
+    --text: #1C1C1E; 
+}
+@media (prefers-color-scheme: dark) { 
+    :root { --bg: #000000; --card: #1C1C1E; --text: #FFFFFF; } 
+}
+
+body { 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+    background: var(--bg); 
+    color: var(--text); 
+    margin: 0; 
+    padding: 15px; 
+}
+
+.app { 
+    max-width: 700px; 
+    margin: 0 auto; 
+    background: var(--card); 
+    border-radius: 16px; 
+    padding: 20px; 
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15); 
+}
+
+h1 { 
+    text-align: center; 
+    color: var(--rough); 
+    font-size: 24px; 
+    margin: 0 0 10px 0; 
+}
+
+.mode-indicator {
+    text-align: center;
+    background: rgba(255,149,0,0.15);
+    color: var(--rough);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    border: 1px solid var(--rough);
+}
+
+h2 { 
+    font-size: 16px; 
+    border-bottom: 1px solid rgba(128,128,128,0.2); 
+    padding-bottom: 8px; 
+    margin-top: 25px; 
+    color: var(--text);
+}
+
+.form-row { margin-bottom: 12px; }
+label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 5px; }
+
+input, select { 
+    width: 100%; 
+    padding: 12px; 
+    border: none; 
+    border-radius: 10px; 
+    background: rgba(128,128,128,0.1); 
+    font-size: 16px; 
+    color: var(--text); 
+    box-sizing: border-box; 
+}
+
+input:focus, select:focus { 
+    outline: 2px solid var(--rough); 
+    background: rgba(128,128,128,0.05); 
+}
+
+.toggle-group { 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    padding: 12px; 
+    background: rgba(128,128,128,0.05); 
+    border-radius: 10px; 
+    margin-bottom: 8px; 
+}
+
+.toggle-group input { width: 20px; height: 20px; }
+
+.sub-option { 
+    margin-left: 15px; 
+    margin-top: 5px; 
+    padding-left: 10px; 
+    border-left: 2px solid var(--rough); 
+    display: none; 
+}
+
+.sub-option.visible { display: block; }
+
+.grid-2 { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 10px; 
+}
+
+.btn { 
+    width: 100%; 
+    padding: 14px; 
+    border: none; 
+    border-radius: 12px; 
+    font-size: 16px; 
+    font-weight: 600; 
+    margin-top: 15px; 
+    cursor: pointer; 
+}
+
+.btn-rough { 
+    background: var(--rough); 
+    color: white; 
+    box-shadow: 0 4px 10px rgba(255,149,0,0.3); 
+}
+
+.btn-secondary { 
+    background: rgba(128,128,128,0.2); 
+    color: var(--primary); 
+}
+
+.bath-selector { 
+    display: flex; 
+    gap: 10px; 
+}
+
+.bath-selector button { 
+    flex: 1; 
+    padding: 10px; 
+    border: 2px solid rgba(128,128,128,0.3); 
+    border-radius: 10px; 
+    background: transparent; 
+    font-weight: 500; 
+    cursor: pointer; 
+}
+
+.bath-selector button.active { 
+    border-color: var(--rough); 
+    background: rgba(255,149,0,0.1); 
+    color: var(--rough); 
+}
+
+/* СЕТКА ВЫБОРА ПОМЕЩЕНИЙ */
+.room-selector-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.room-check-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background: rgba(128,128,128,0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(128,128,128,0.1);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.room-check-item:hover {
+    background: rgba(128,128,128,0.1);
+    border-color: var(--rough);
+}
+
+.room-check-item.active {
+    background: rgba(255,149,0,0.1);
+    border-color: var(--rough);
+    font-weight: 600;
+}
+
+.room-check-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+    accent-color: var(--rough);
+    cursor: pointer;
+}
+
+.room-check-item label {
+    margin: 0;
+    cursor: pointer;
+    font-size: 14px;
+    flex-grow: 1;
+}
+
+/* КАРТОЧКА ПОМЕЩЕНИЯ В СПИСКЕ */
+.room-card { 
+    background: rgba(128,128,128,0.05); 
+    border-radius: 12px; 
+    padding: 15px; 
+    margin-bottom: 12px;
+    border: 1px solid rgba(128,128,128,0.1);
+}
+
+.room-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 12px; 
+}
+
+.room-name-input {
+    flex-grow: 1;
+    margin-right: 10px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(128,128,128,0.3);
+    background: rgba(128,128,128,0.05);
+    font-weight: 600;
+}
+
+.room-remove { 
+    background: #ff3b30; 
+    color: white; 
+    border: none; 
+    border-radius: 6px; 
+    padding: 6px 12px; 
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.room-remove:hover {
+    background: #ff2d22;
+}
+
+/* ЧЕКБОКСЫ ВНУТРИ КАРТОЧКИ ПОМЕЩЕНИЯ */
+.room-checkboxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.checkbox-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px;
+    background: rgba(128,128,128,0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(128,128,128,0.1);
+}
+
+.checkbox-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--rough);
+}
+
+.checkbox-item input[type="number"] {
+    width: 100%;
+    padding: 6px;
+    font-size: 14px;
+    text-align: center;
+    border: 1px solid rgba(128,128,128,0.2);
+    border-radius: 4px;
+}
+
+.checkbox-item input[type="number"]:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    background: rgba(128,128,128,0.05);
+}
+
+.checkbox-item label {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.checkbox-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.phase-note {
+    font-size: 12px;
+    color: #666;
+    margin-top: 10px;
+    padding: 10px;
+    background: rgba(0,122,255,0.05);
+    border-radius: 6px;
+    border-left: 3px solid var(--primary);
+}
+
+#result { 
+    margin-top: 20px; 
+    padding: 15px; 
+    background: rgba(255,149,0,0.1); 
+    border-radius: 12px; 
+    display: none; 
+    border: 2px solid var(--rough);
+}
+
+.alert { 
+    background: #FFF3CD; 
+    color: #856404; 
+    padding: 12px; 
+    border-radius: 8px; 
+    margin-bottom: 15px; 
+    border-left: 4px solid var(--rough); 
+}
+
+.cable-breakdown { 
+    background: rgba(255,255,255,0.6); 
+    padding: 12px; 
+    border-radius: 8px; 
+    margin: 10px 0; 
+}
+
+.cable-row { 
+    display: flex; 
+    justify-content: space-between; 
+    margin-bottom: 6px; 
+}
+
+.group-list { 
+    list-style: none; 
+    padding: 0; 
+    margin: 10px 0; 
+}
+
+.group-list li { 
+    padding: 6px 0; 
+    border-bottom: 1px dashed rgba(128,128,128,0.3); 
+    display: flex; 
+    justify-content: space-between; 
+}
+
+.total-price { 
+    font-size: 28px; 
+    font-weight: 800; 
+    color: var(--rough); 
+    text-align: right; 
+    margin-top: 15px; 
+}
+
+.summary-badge { 
+    display: inline-block; 
+    background: rgba(255,149,0,0.15); 
+    padding: 4px 10px; 
+    border-radius: 20px; 
+    font-size: 12px; 
+    margin-right: 5px; 
+    margin-bottom: 5px; 
+}
+
+@media (prefers-color-scheme: dark) { 
+    .cable-breakdown { background: rgba(255,255,255,0.1); }
+    .checkbox-item { background: rgba(255,255,255,0.05); }
+    .room-card { background: rgba(255,255,255,0.03); }
+    .room-check-item { background: rgba(255,255,255,0.05); }
+}
