@@ -2,92 +2,29 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>⚡ Электро Проект PRO</title>
-    <style>
-        :root { --primary: #007AFF; --bg: #F2F2F7; --card: #FFFFFF; --text: #1C1C1E; --warn: #FF9500; }
-        @media (prefers-color-scheme: dark) { :root { --bg: #000000; --card: #1C1C1E; --text: #FFFFFF; } }
-        
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; }
-        .app { max-width: 600px; margin: 0 auto; background: var(--card); border-radius: 16px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
-        
-        h1 { text-align: center; color: var(--primary); font-size: 20px; margin: 0 0 20px 0; }
-        h2 { font-size: 16px; border-bottom: 1px solid rgba(128,128,128,0.2); padding-bottom: 8px; margin-top: 25px; color: var(--text); display: flex; align-items: center; gap: 8px; }
-        h2::before { content: ''; display: block; width: 4px; height: 16px; background: var(--primary); border-radius: 2px; }
-        
-        .form-row { margin-bottom: 12px; }
-        label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 5px; }
-        input, select { width: 100%; padding: 12px; border: none; border-radius: 10px; background: rgba(128,128,128,0.1); font-size: 16px; color: var(--text); box-sizing: border-box; transition: 0.2s; }
-        input:focus, select:focus { outline: 2px solid var(--primary); background: rgba(128,128,128,0.05); }
-        
-        .toggle-group { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: rgba(128,128,128,0.05); border-radius: 10px; margin-bottom: 8px; cursor: pointer; }
-        .toggle-group label { margin: 0; font-weight: normal; flex-grow: 1; }
-        .toggle-group input { width: 20px; height: 20px; margin-left: 10px; }
-        
-        .sub-option { margin-left: 15px; margin-top: 5px; padding-left: 10px; border-left: 2px solid var(--primary); display: none; animation: fadeIn 0.3s; }
-        .sub-option.visible { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
-
-        .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; margin-top: 15px; cursor: pointer; transition: 0.2s; }
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(0,122,255,0.3); }
-        .btn-primary:active { transform: scale(0.98); }
-        .btn-secondary { background: rgba(128,128,128,0.2); color: var(--primary); }
-        
-        #result { margin-top: 20px; padding: 15px; background: rgba(0,122,255,0.1); border-radius: 12px; display: none; animation: slideUp 0.4s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .group-list { list-style: none; padding: 0; margin: 10px 0; font-size: 14px; }
-        .group-list li { padding: 6px 0; border-bottom: 1px dashed rgba(128,128,128,0.3); display: flex; justify-content: space-between; }
-        .total-price { font-size: 26px; font-weight: 800; color: var(--primary); text-align: right; margin-top: 15px; }
-        .alert { background: #FFF3CD; color: #856404; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; border-left: 4px solid var(--warn); line-height: 1.4; }
-        
-        .cable-breakdown { background: rgba(255,255,255,0.6); padding: 12px; border-radius: 8px; margin: 10px 0; font-size: 14px; }
-        .cable-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
-        .item-count { font-weight: bold; color: #333; }
-        @media (prefers-color-scheme: dark) { .item-count { color: #fff; } .cable-breakdown { background: rgba(255,255,255,0.1); } }
-        
-        .preset-loader { background: #eef7ff; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #cce5ff; }
-        .preset-select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #007AFF; background: white; color: #007AFF; font-weight: bold; }
-        
-        /* Стили для переключателя режима */
-        .mode-switch { background: #f0f0f0; padding: 5px; border-radius: 10px; display: flex; margin-bottom: 15px; }
-        .mode-btn { flex: 1; padding: 8px; text-align: center; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; color: #666; transition: 0.2s; }
-        .mode-btn.active { background: white; color: var(--primary); shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏗️ Черновая электрика</title>
+    <link rel="stylesheet" href="rough.css">
 </head>
 <body>
 
 <div class="app">
-    <h1>⚡ Электро Проект PRO</h1>
+    <h1>🏗️ Черновая электрика</h1>
+    <div class="mode-indicator">Штробление, кабель, подрозетники, сборка щита</div>
 
-    <!-- Переключатель режима -->
-    <div class="mode-switch">
-        <div class="mode-btn active" id="modeRough" onclick="setMode('rough')">🏗️ Черновая</div>
-        <div class="mode-btn" id="modeFinish" onclick="setMode('finish')">✨ Чистовая</div>
-        <div class="mode-btn" id="modeTurnkey" onclick="setMode('turnkey')">🔑 Под ключ</div>
-    </div>
-
-    <!-- ЗАГРУЗКА ПРЕСЕТА -->
-    <div class="preset-loader">
-        <label style="color:#007AFF; font-weight:bold;">📂 Быстрый старт (Шаблон)</label>
-        <select id="presetSelect" class="preset-select" onchange="loadPreset()">
-            <option value="">— Выберите тип квартиры —</option>
-        </select>
-    </div>
-
-    <!-- ШАГ 1: БАЗОВЫЕ ПАРАМЕТРЫ -->
-    <h2>1. Параметры объекта</h2>
-    <div class="grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+    <!-- ПАРАМЕТРЫ -->
+    <h2>📐 Параметры объекта</h2>
+    <div class="grid-2">
         <div class="form-row">
             <label>Площадь (м²)</label>
-            <input type="number" id="area" value="96">
+            <input type="number" id="area" value="60">
         </div>
         <div class="form-row">
             <label>Дальняя точка (м)</label>
-            <input type="number" id="maxDist" value="25">
+            <input type="number" id="maxDist" value="20">
         </div>
     </div>
-
+    
     <div class="form-row">
         <label>Сложность трассы</label>
         <select id="cableCoef">
@@ -96,7 +33,7 @@
             <option value="0.9">Низкая</option>
         </select>
     </div>
-
+    
     <div class="form-row">
         <label>Материал стен</label>
         <select id="wallType">
@@ -106,428 +43,86 @@
         </select>
     </div>
 
-    <!-- ШАГ 2: НАПОЛНЕНИЕ -->
-    <h2>2. Техника и Санузлы</h2>
+    <!-- САНУЗЛЫ -->
+    <h2>🚿 Санузлы</h2>
+    <div class="form-row">
+        <label>Количество санузлов:</label>
+        <div class="bath-selector">
+            <button type="button" id="bath1Btn" class="active" onclick="setBathCount(1)">1</button>
+            <button type="button" id="bath2Btn" onclick="setBathCount(2)">2</button>
+        </div>
+    </div>
+
+    <!-- ТЕХНИКА -->
+    <h2>🔌 Техника</h2>
     <div class="toggle-group"><label>Стиральная машина</label><input type="checkbox" id="washMachine" checked></div>
     <div class="toggle-group"><label>Посудомоечная машина</label><input type="checkbox" id="dishWasher" checked></div>
     <div class="toggle-group"><label>Духовой шкаф + СВЧ</label><input type="checkbox" id="ovenMicrowave" checked></div>
     
     <div class="toggle-group">
         <label>Водонагреватель</label>
-        <input type="checkbox" id="boilerCheck" checked onchange="toggleBoiler()">
+        <input type="checkbox" id="boilerCheck" onchange="toggleBoiler()">
     </div>
-    <div id="boilerOptions" class="sub-option visible">
-        <label>Тип нагревателя:</label>
+    <div id="boilerOptions" class="sub-option">
         <select id="boilerType">
-            <option value="storage" selected>Накопительный (~2кВт)</option>
-            <option value="flow">Проточный (~5-7кВт)</option>
+            <option value="storage" selected>Накопительный</option>
+            <option value="flow">Проточный</option>
         </select>
     </div>
 
-    <div class="form-row" style="margin-top:10px;">
-        <label>Розетки в санузле:</label>
-        <input type="number" id="bathSockets" value="6">
-    </div>
+    <!-- ВЫБОР ПОМЕЩЕНИЙ -->
+    <h2>🏠 Выбор помещений</h2>
+    <div class="room-selector-grid" id="roomSelector"></div>
     
+    <div class="phase-note">
+        <strong>💡 Подсказка:</strong> Отметьте галочками нужные комнаты.
+    </div>
+
+    <!-- СПИСОК ПОМЕЩЕНИЙ -->
+    <h2>📋 Детализация помещений</h2>
+    <div id="roomsContainer"></div>
+
+    <!-- ТЕПЛЫЕ ПОЛЫ -->
+    <h2>🔥 Теплые полы</h2>
     <div class="toggle-group">
-        <label>Теплые полы (кол-во зон)</label>
-        <select id="floorHeatZones" onchange="toggleFloorHeat()" style="width: 80px; padding: 5px;">
+        <label>Зоны теплого пола:</label>
+        <select id="floorHeatZones" onchange="toggleFloorHeat()">
             <option value="0">Нет</option>
+            <option value="1">1 зона</option>
             <option value="2" selected>2 зоны</option>
             <option value="3">3 зоны</option>
         </select>
     </div>
     <div id="floorHeatOptions" class="sub-option visible">
-        <label>Общая площадь ТП (м²):</label>
-        <input type="number" id="floorHeatArea" value="5">
-    </div>
-
-    <h2>3. Освещение и Розетки</h2>
-    <div class="form-row">
-        <label>Освещение комнат + Кухня + Коридор:</label>
-        <input type="number" id="mainLights" value="45">
-    </div>
-    <div class="form-row">
-        <label>Освещение Санузла (отдельно):</label>
-        <input type="number" id="bathLights" value="4">
-    </div>
-    
-    <div class="grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-        <div class="form-row">
-            <label>Выключатели:</label>
-            <input type="number" id="switches" value="18">
+        <div class="grid-2">
+            <div class="form-row">
+                <label>Площадь ТП (м²)</label>
+                <input type="number" id="floorHeatArea" value="4">
+            </div>
+            <div class="form-row">
+                <label>Терморегуляторы</label>
+                <input type="number" id="tpRegulators" value="2">
+            </div>
         </div>
-        <div class="form-row">
-            <label>Розетки фартука:</label>
-            <input type="number" id="kitchenCounter" value="4">
-        </div>
-    </div>
-    
-    <div class="form-row">
-        <label>Розетки комнат + Гостиная:</label>
-        <input type="number" id="roomSockets" value="35">
-    </div>
-
-    <!-- Дополнительные слаботочные точки (для чистовой) -->
-    <h2>4. Слаботочка и Управление</h2>
-    <div class="grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-        <div class="form-row">
-            <label>Интернет (RJ-45):</label>
-            <input type="number" id="netSockets" value="4">
-        </div>
-        <div class="form-row">
-            <label>ТВ розетки:</label>
-            <input type="number" id="tvSockets" value="3">
-        </div>
-    </div>
-    <div class="form-row">
-        <label>Терморегуляторы ТП:</label>
-        <input type="number" id="tpRegulators" value="2">
     </div>
 
     <div class="toggle-group">
-        <label>Мастер-клавиша (всё выкл.)</label>
-        <input type="checkbox" id="masterKey" checked onchange="toggleMasterKey()">
+        <label>⚡ Мастер-клавиша</label>
+        <input type="checkbox" id="masterKey" onchange="toggleMasterKey()">
     </div>
-    <div id="masterKeyInfo" class="sub-option visible">
-        <div class="alert">️ Требуется контактор (2 модуля) в щите</div>
+    <div id="masterKeyInfo" class="sub-option">
+        <div class="alert">Требуется контактор (2 модуля)</div>
     </div>
 
-    <button class="btn btn-primary" onclick="calculate()">📊 Рассчитать проект</button>
-    <button class="btn btn-secondary" onclick="copyResult()">📋 Копировать смету</button>
+    <button class="btn btn-rough" onclick="calculate()">📊 Рассчитать черновую</button>
+    <button class="btn btn-secondary" onclick="copyResult()">📋 Копировать</button>
 
     <div id="result"></div>
 </div>
 
-<script>
-    // === ЦЕНЫ (КАЛИБРОВКА ПОД ТЮМЕНЬ, 2025) ===
-    const P = {
-        // Кабель
-        cable_1_5: 52,   
-        cable_2_5: 78,   
-        cable_4_0: 135,  
-        cable_6_0: 195,  
-        
-        // Механизмы (чистовая)
-        socket: 165,     // Силовая розетка
-        switch: 135,     // Выключатель
-        net_socket: 250, // Интернет RJ-45
-        tv_socket: 250,  // ТВ розетка
-        tp_regulator: 1500, // Терморегулятор теплого пола (механизм)
-        pod: 35,         // Подрозетник (черновая)
-        
-        // Освещение и коробки
-        light: 220,          
-        junction_box: 45,    
-        box: 110,            
-        
-        // Защита и автоматика
-        uzo: 1650,       
-        contactor: 2700, 
-        
-        // Теплые полы
-        floor_heat_control: 2700, // Терморегулятор + монтаж (черновая часть)
-        floor_heat_mat: 1600,     
-        
-        // РАБОТЫ
-        work_point_install: 480,      // Установка подрозетника (черновая)
-        work_mechanism_install: 150,  // Установка механизма силовой/слаботочки (чистовая)
-        work_light_install: 380,      // Подключение светильника (чистовая)
-        work_tp_regulator: 800,       // Установка терморегулятора ТП (чистовая)
-        work_panel: 3200,     
-        work_group: 230,      
-        
-        // Штробление
-        work_strobe_base: 260  
-    };
-
-    let currentMode = 'rough'; // 'rough', 'finish', 'turnkey'
-    let presetsData = [];
-
-    function setMode(mode) {
-        currentMode = mode;
-        document.getElementById('modeRough').classList.toggle('active', mode === 'rough');
-        document.getElementById('modeFinish').classList.toggle('active', mode === 'finish');
-        document.getElementById('modeTurnkey').classList.toggle('active', mode === 'turnkey');
-        calculate();
-    }
-
-    // Загрузка пресетов
-    fetch('presets.json')
-        .then(response => response.json())
-        .then(data => {
-            presetsData = data;
-            const select = document.getElementById('presetSelect');
-            data.forEach((p, index) => {
-                const option = document.createElement('option');
-                option.value = index;
-                option.text = p.name;
-                select.appendChild(option);
-            });
-        })
-        .catch(err => console.log("presets.json не найден"));
-
-    function loadPreset() {
-        const idx = document.getElementById('presetSelect').value;
-        if(idx === "") return;
-        
-        const p = presetsData[idx];
-        const setVal = (id, val, def) => { const el = document.getElementById(id); if(el) el.value = (val !== undefined && val !== null) ? val : def; };
-        const setCheck = (id, val) => { const el = document.getElementById(id); if(el) el.checked = !!val; };
-
-        setVal('area', p.area, 96);
-        setVal('maxDist', p.maxDist, 25);
-        setVal('cableCoef', p.cableCoef, 1.3);
-        setVal('wallType', p.wallType, 280);
-        
-        setCheck('washMachine', p.washMachine);
-        setCheck('dishWasher', p.dishWasher);
-        setCheck('ovenMicrowave', p.ovenMicrowave);
-        
-        setCheck('boilerCheck', p.boilerCheck);
-        if(p.boilerType) document.getElementById('boilerType').value = p.boilerType;
-        toggleBoiler();
-        
-        setVal('bathSockets', p.bathSockets, 6);
-        
-        setVal('floorHeatZones', p.floorHeatZones, 2);
-        setVal('floorHeatArea', p.floorHeatArea, 5);
-        toggleFloorHeat();
-        
-        setVal('mainLights', p.mainLights, 45);
-        setVal('bathLights', p.bathLights, 4);
-        setVal('switches', p.switches, 18);
-        setVal('kitchenCounter', p.kitchenCounter, 4);
-        setVal('roomSockets', p.roomSockets, 35);
-        
-        // Слаботочка по умолчанию для проекта
-        setVal('netSockets', p.netSockets || 4, 4);
-        setVal('tvSockets', p.tvSockets || 3, 3);
-        setVal('tpRegulators', p.tpRegulators || 2, 2);
-
-        setCheck('masterKey', p.masterKey);
-        toggleMasterKey();
-        
-        calculate();
-    }
-
-    function toggleBoiler() { document.getElementById('boilerOptions').classList.toggle('visible', document.getElementById('boilerCheck').checked); }
-    function toggleFloorHeat() { 
-        const zones = parseInt(document.getElementById('floorHeatZones').value);
-        const el = document.getElementById('floorHeatOptions');
-        if(zones > 0) { el.classList.add('visible'); if(!document.getElementById('floorHeatArea').value) document.getElementById('floorHeatArea').value = zones * 3; } 
-        else { el.classList.remove('visible'); }
-    }
-    function toggleMasterKey() { document.getElementById('masterKeyInfo').classList.toggle('visible', document.getElementById('masterKey').checked); }
-
-    // === РАСЧЕТ КАБЕЛЯ ===
-    function calculateCable(area, totalPoints, maxDist, complexityCoef, hasFloorHeat) {
-        const a = Number(area) || 0;
-        const tp = Number(totalPoints) || 0;
-        const md = Number(maxDist) || 0;
-        const cc = Number(complexityCoef) || 1.0;
-
-        if (a <= 0) return { total: 0, pwr: 0, light: 0 };
-        
-        const perimeter = Math.sqrt(a) * 4;
-        let baseLen = perimeter * 1.5; 
-        const pointsLen = tp * 4.0; 
-        const distAdjustment = md > 15 ? ((md - 15) * 3) : 0;
-        const fhLen = hasFloorHeat ? 25 : 0;
-        
-        let rawTotal = (baseLen + pointsLen + distAdjustment + fhLen) * cc;
-        if (isNaN(rawTotal)) return { total: 0, pwr: 0, light: 0 };
-
-        let finalTotal = Math.ceil(rawTotal * 1.15);
-        return { total: finalTotal, pwr: Math.ceil(finalTotal * 0.55), light: Math.ceil(finalTotal * 0.45) };
-    }
-
-    function calculate() {
-        try {
-            const area = parseFloat(document.getElementById('area').value) || 0;
-            const wallPrice = parseFloat(document.getElementById('wallType').value) || 280;
-            const cableCoef = parseFloat(document.getElementById('cableCoef').value) || 1.3;
-            const maxDist = parseFloat(document.getElementById('maxDist').value) || 25;
-            
-            const hasWash = document.getElementById('washMachine').checked;
-            const hasDish = document.getElementById('dishWasher').checked;
-            const hasOven = document.getElementById('ovenMicrowave').checked;
-            const hasBoiler = document.getElementById('boilerCheck').checked;
-            const boilerType = document.getElementById('boilerType').value;
-            
-            const bathSockets = parseInt(document.getElementById('bathSockets').value) || 0;
-            const floorHeatZones = parseInt(document.getElementById('floorHeatZones').value) || 0;
-            const floorHeatArea = parseInt(document.getElementById('floorHeatArea').value) || 0;
-            const hasFloorHeat = floorHeatZones > 0;
-
-            const mainLights = parseInt(document.getElementById('mainLights').value) || 0;
-            const bathLights = parseInt(document.getElementById('bathLights').value) || 0;
-            const kCounter = parseInt(document.getElementById('kitchenCounter').value) || 0;
-            const roomSockets = parseInt(document.getElementById('roomSockets').value) || 0;
-            const switches = parseInt(document.getElementById('switches').value) || 0;
-            const hasMasterKey = document.getElementById('masterKey').checked;
-
-            // Слаботочка
-            const netSockets = parseInt(document.getElementById('netSockets').value) || 0;
-            const tvSockets = parseInt(document.getElementById('tvSockets').value) || 0;
-            const tpRegs = parseInt(document.getElementById('tpRegulators').value) || 0;
-
-            const totalSockets = kCounter + roomSockets + bathSockets + (hasWash?1:0) + (hasDish?1:0) + (hasOven?1:0) + (hasBoiler?1:0);
-            const totalLights = mainLights + bathLights;
-            const totalPoints = totalSockets + totalLights + switches + netSockets + tvSockets + tpRegs;
-
-            const countPodrozetniki = totalSockets + switches + netSockets + tvSockets + tpRegs; // Подрозетники нужны под все точки
-            const countJunctionBoxes = Math.ceil(totalPoints / 5) + 2;
-
-            const cableData = calculateCable(area, totalPoints, maxDist, cableCoef, hasFloorHeat);
-            const lenPwr = cableData.pwr;   
-            const lenLight = cableData.light;
-
-            // === ГРУППЫ ЩИТА ===
-            let groups = [];
-            groups.push({name: "Вводной автомат + Реле напряжения", type: "main"});
-            if(hasWash) groups.push({name: "Стиральная машина", w: 2.5});
-            if(hasDish) groups.push({name: "ПММ", w: 2.5});
-            if(hasOven) groups.push({name: "Духовка + СВЧ", w: 2.5});
-            if(hasBoiler) groups.push({name: (boilerType === 'flow' ? "Проточный (3x6)" : "Бойлер (3x2.5)"), w: (boilerType === 'flow' ? 6.0 : 2.5)});
-            if(kCounter > 0) groups.push({name: "Розетки фартука", w: 2.5});
-            if(bathSockets > 0) groups.push({name: "Розетки с/у (УЗО)", w: 2.5});
-            if(hasFloorHeat) groups.push({name: `Теплые полы (${floorHeatZones} зон)`, w: 2.5});
-            if(mainLights > 0) groups.push({name: `Свет основной (${mainLights} т.)`, w: 1.5});
-            if(bathLights > 0) groups.push({name: "Свет с/у (УЗО)", w: 1.5});
-            const roomSockGroups = Math.ceil(roomSockets / 8);
-            for(let i=1; i<=roomSockGroups; i++) groups.push({name: `Розетки комн. гр.${i}`, w: 2.5});
-            if(hasMasterKey) groups.push({name: "Контактор", w: 0, type: 'contactor'});
-
-            // === СТОИМОСТЬ ===
-            let costMaterials = 0;
-            let costWork = 0;
-
-            // 1. Черновые материалы и работы (всегда считаются, но показываются только в режимах Rough/Turnkey)
-            const costCablePwr = lenPwr * P.cable_2_5; 
-            const costCableLight = lenLight * P.cable_1_5;
-            const costPodrozetniki = countPodrozetniki * P.pod;
-            const costJunctionBoxes = countJunctionBoxes * P.junction_box;
-            const costBoxes = groups.length * P.box; 
-            const costFloorHeatMat = hasFloorHeat ? (floorHeatArea * P.floor_heat_mat) : 0;
-            const costContactor = hasMasterKey ? P.contactor : 0;
-            const costUZO = (hasFloorHeat ? 3 : 2) * P.uzo;
-
-            const roughMaterials = costCablePwr + costCableLight + costPodrozetniki + costJunctionBoxes + costBoxes + costFloorHeatMat + costContactor + costUZO;
-
-            const workStrobe = (lenPwr + lenLight) * P.work_strobe_base * (wallPrice/280) * 0.8;
-            const workInstallPods = countPodrozetniki * P.work_point_install;
-            const workFloorHeatMat = hasFloorHeat ? (floorHeatArea * 500) : 0;
-            const workPanel = P.work_panel + (groups.length * P.work_group);
-            const workContactor = hasMasterKey ? 1500 : 0;
-
-            const roughWork = workStrobe + workInstallPods + workFloorHeatMat + workPanel + workContactor;
-
-            // 2. Чистовые материалы и работы (показываются в Finish/Turnkey)
-            let finishMaterials = 0;
-            let finishWork = 0;
-
-            if (currentMode === 'finish' || currentMode === 'turnkey') {
-                // Материалы
-                finishMaterials += totalSockets * P.socket;
-                finishMaterials += switches * P.switch;
-                finishMaterials += netSockets * P.net_socket;
-                finishMaterials += tvSockets * P.tv_socket;
-                finishMaterials += tpRegs * P.tp_regulator;
-                finishMaterials += totalLights * P.light;
-                finishMaterials += hasFloorHeat ? P.floor_heat_control : 0; // Терморегулятор как материал+работа базы
-
-                // Работы
-                finishWork += (totalSockets + switches + netSockets + tvSockets) * P.work_mechanism_install;
-                finishWork += tpRegs * P.work_tp_regulator;
-                finishWork += totalLights * P.work_light_install;
-            }
-
-            // Итоги по режимам
-            let totalMat = 0;
-            let totalWrk = 0;
-
-            if (currentMode === 'rough') {
-                totalMat = roughMaterials;
-                totalWrk = roughWork;
-            } else if (currentMode === 'finish') {
-                totalMat = finishMaterials;
-                totalWrk = finishWork;
-            } else { // turnkey
-                totalMat = roughMaterials + finishMaterials;
-                totalWrk = roughWork + finishWork;
-            }
-
-            const grandTotal = totalMat + totalWrk;
-
-            // === ВЫВОД ===
-            let modeText = "";
-            if(currentMode === 'rough') modeText = "🏗️ Черновая отделка";
-            if(currentMode === 'finish') modeText = "✨ Чистовая электрика";
-            if(currentMode === 'turnkey') modeText = "🔑 Под ключ";
-
-            let alerts = `<div class="alert">ℹ️ Режим: <b>${modeText}</b></div>`;
-            if(groups.length > 12) alerts += "<div class='alert'>ℹ️ Щит >12 модулей. Рекомендуем двухрядный.</div>";
-
-            let groupHtml = groups.map(g => {
-                if(g.type === 'contactor') return `<li><span>${g.name}</span> <span>2 мод</span></li>`;
-                return `<li><span>${g.name}</span> <span>${g.w?g.w+'мм²':'-'}</span></li>`;
-            }).join('');
-
-            // Формируем список материалов в зависимости от режима
-            let matList = "";
-            
-            if (currentMode === 'rough' || currentMode === 'turnkey') {
-                matList += `
-                    <div class="cable-row"><span> ВВГнг 3×2.5 (Силовой):</span> <b>${lenPwr} м</b></div>
-                    <div class="cable-row"><span>🧵 ВВГнг 3×1.5 (Свет):</span> <b>${lenLight} м</b></div>
-                    <div class="cable-row" style="background:rgba(0,122,255,0.1); padding:5px; border-radius:4px;"><span>🏺 <b>Подрозетники:</b></span> <span class="item-count"><b>${countPodrozetniki} шт</b></span></div>
-                    <div class="cable-row"><span> Распред. коробки:</span> <span class="item-count">~${countJunctionBoxes} шт</span></div>
-                `;
-            }
-            
-            if (currentMode === 'finish' || currentMode === 'turnkey') {
-                matList += `
-                    <hr style="border:0; border-top:1px dashed #ccc; margin:10px 0;">
-                    <div class="cable-row"><span>🔌 Розетки силовые:</span> <span class="item-count">${totalSockets} шт</span></div>
-                    <div class="cable-row"><span>🔲 Выключатели:</span> <span class="item-count">${switches} шт</span></div>
-                    <div class="cable-row"><span>🌐 Интернет (RJ-45):</span> <span class="item-count">${netSockets} шт</span></div>
-                    <div class="cable-row"><span>📺 ТВ розетки:</span> <span class="item-count">${tvSockets} шт</span></div>
-                    <div class="cable-row"><span>🌡️ Терморегуляторы ТП:</span> <span class="item-count">${tpRegs} шт</span></div>
-                    <div class="cable-row"><span>💡 Светильники:</span> <span class="item-count">${totalLights} шт</span></div>
-                `;
-            }
-
-            const html = `
-                ${alerts}
-                
-                <div style="font-weight:bold; margin-bottom:10px; color:var(--primary);">📦 Закупка материалов:</div>
-                <div class="cable-breakdown">${matList}</div>
-
-                <div style="font-weight:bold; margin-bottom:5px; margin-top:15px;">📋 Схема щита (${groups.length} групп):</div>
-                <ul class="group-list">${groupHtml}</ul>
-                
-                <hr style="border:0; border-top:1px dashed #ccc; margin:15px 0;">
-                <div style="display:flex; justify-content:space-between; font-size:15px;"><span>Материалы:</span> <span>${totalMat.toLocaleString()} ₽</span></div>
-                <div style="display:flex; justify-content:space-between; font-size:15px;"><span>Работы:</span> <span>${totalWrk.toLocaleString()} ₽</span></div>
-                <div class="total-price">ИТОГО: ${grandTotal.toLocaleString()} ₽</div>
-            `;
-
-            const resDiv = document.getElementById('result');
-            resDiv.innerHTML = html;
-            resDiv.style.display = 'block';
-            resDiv.scrollIntoView({behavior:'smooth'});
-
-            window.lastData = `Проект на ${area}м² [${modeText}]\nКабель: ${cableData.total}м\nПодрозетники: ${countPodrozetniki} шт\nГрупп: ${groups.length}\nИтого: ${grandTotal} руб.`;
-
-        } catch(e) { alert("Ошибка: "+e.message); console.error(e); }
-    }
-
-    function copyResult() {
-        if(!window.lastData) return;
-        navigator.clipboard.writeText(window.lastData).then(() => alert("Скопировано!"));
-    }
-</script>
-
+<!-- Подключаем файлы в правильном порядке -->
+<script src="materials.js"></script>
+<script src="panel.js"></script>
+<script src="rough.js"></script>
 </body>
 </html>
